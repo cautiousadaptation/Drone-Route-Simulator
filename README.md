@@ -18,6 +18,7 @@ This repository contains the following items:
 - **src/** - Source directory containing the SEAMS demo application code.
 - **aspectj-1.9.2/** - Directory for the AspectJ resources used in the aspect implementation.
 - **ExecuteApplication/** - Directory including Docker image and .JAR files for executing in Ubuntu and Windows, each one having its proper instructions to run.
+- **SEAMS_2019___Cautious_Adaptation.pdf** - Submitted version of our research track paper.
 
 ## Platform requirements
 The executable artifact is available in both a single JAR format and Docker images to run on Windows 10 or Ubuntu machines. Note that the artifact may run on other Windows and Linux versions, but it was not extensively tested in all operating systems.
@@ -34,10 +35,10 @@ This section presents a step-by-step tutorial to use the artifact. In addition, 
 
 The first step of using the simulator is the environment construction. The available elements are:
 
-- River, which the drone should not land on;
-- Hospital, which can be set by the user as the Source and Target hospitals of the flight;
-- Antenna, which emits waves that cause a bad connection in the drones located in its adjacent blocks;
-- Drone, the main element that has its own properties, as described in the next steps.
+- **River**, which the drone should not land on;
+- **Hospital**, which can be set by the user as the Source and Target hospitals of the flight;
+- **Antenna**, which emits waves that cause a bad connection in the drones located in its adjacent blocks;
+- **Drone**, the main element that has its own properties, as described in the next steps.
 
 This simulator provides two options for setting the environment:
 
@@ -48,11 +49,11 @@ This simulator provides two options for setting the environment:
 
 The next step consists of configuring the following drone properties:
 
-- Battery consumption per block: it sets the percentage of battery consumed when the selected drone moves from a block to an adjacent block.
-- Battery consumption per second: it sets the percentage of battery consumed per second while the selected drone is flying.
-- Initial battery: the initial percentage value for the selected drone.
-- Wrapper checkbox: by checking this box, the user selects a drone with the wrapper implementation, while leaving the box unchecked means that the selected drone will flight according to its original behaviour.
-- Automatic checkbox:  by checking this box, the user  turns the automatic pilot feature of the drone on, so it will move independently following a minimal path algorithm.  On the other hand, leaving the box unchecked implies that the user will pilot the drone manually.
+- **Battery consumption per block**: it sets the percentage of battery consumed when the selected drone moves from a block to an adjacent block.
+- **Battery consumption per second**: it sets the percentage of battery consumed per second while the selected drone is flying.
+- **Initial battery**: the initial percentage value for the selected drone.
+- **Wrapper checkbox**: by checking this box, the user selects a drone with the wrapper implementation, while leaving the box unchecked means that the selected drone will flight according to its original behaviour.
+- **Automatic checkbox**:  by checking this box, the user  turns the automatic pilot feature of the drone on, so it will move independently following a minimal path algorithm.  On the other hand, leaving the box unchecked implies that the user will pilot the drone manually.
 
 Controls for piloting drones manually:
 - **R** key: turn on/off the drone.
