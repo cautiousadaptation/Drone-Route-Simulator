@@ -31,7 +31,7 @@
 
 
 
-7 - Execute this command "docker run -it --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix daltskin/darknet bash" In PowerShell for run drone-route-simulator application;
+7 - Execute this command "docker run -it --privileged -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix drone-route-simulator-windows" In PowerShell for run drone-route-simulator application;
 
 
 
