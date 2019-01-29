@@ -3,7 +3,7 @@
 1.1 - If necessary, configure JAVA_HOME following this site: "https://www.youtube.com/watch?v=74pE3kLerAU&vl=pt"
 
 
-2 - Open .../Drone-Route-Simulator/ExecuteApplication/Windows/ folder in your gui;
+2 - Open .../Drone-Route-Simulator/ExecuteApplication/Windows/Normal/ folder in your gui;
 
 
 3 - Double click in Drone-Route-Simulator.jar for run drone-route-simulator application;
