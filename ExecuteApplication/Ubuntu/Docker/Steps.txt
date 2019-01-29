@@ -4,7 +4,7 @@
 
 
 
-2 - Open DockerImage folder in Terminal (.../ExecuteApplication/Ubuntu/Docker/DockerImage/);
+2 - Open DockerImage folder in Terminal (.../Drone-Route-Simulator/ExecuteApplication/Ubuntu/Docker/DockerImage/);
 
 
 
