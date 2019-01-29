@@ -1,4 +1,4 @@
-# Drone Route Simulator -  Cautious Adaptation for Defiant Components
+# Drone Route Simulator
 
 #### SEAMS 2019 artifact
 The DroneRouteSimulator simulates the drone's behaviour with and without our wrapper solution during its flight from a source to a target hospital.  
