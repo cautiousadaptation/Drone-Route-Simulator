@@ -56,9 +56,9 @@ Controls for Manoeuvring Drones:
 
 ### 3) Starting the application
 
-The final step is start the execution of the application, by clicking the "Ready" button. That triggers the execution of each drone inserted in the enviroment simultaneously. The results are printed in a text area, where it is possible to verify the messages of each drone that is working at the moment. 
+The final step is start the execution of the application, by clicking the "Ready" button. That triggers the execution of each drone inserted in the environment simultaneously. The results are printed in a text area, where it is possible to verify the messages of each drone that is working at the moment. 
 
-To restart the execution, clicking at the "Restart" button will reset the logs's text area, and restore the initial position of the drones inserted.
+To restart the execution, clicking at the "Restart" button will reset the logs's text area, and restore the initial position and initial battery of the drones inserted.
 
 When the simulation ends, the logs printed can be used to analyze the cautious adaptation approach, which is reported in greater detail in the evaluation section in the accompanying paper.
 
