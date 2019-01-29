@@ -15,19 +15,31 @@ This repository contains the following items:
 - **README.md** - This text as Markdown.
 - **index.html** - This text as HTML.
 - **src/** - Source directory containing the SEAMS demo application code.
-- **aspectj-1.9.2/** - AspectJ resources used in aspect implementation.
+- **aspectj-1.9.2/** - Directory for the AspectJ resources used in the aspect implementation.
 - **ExecuteApplication/** - Directory including Docker image and .JAR files for executing in Ubuntu and Windows, each one having its proper instructions to run.
 
 ## Platform requirements
 There are artifact's executables in .JAR format and Dockers images available in this repository to run on Windows 10 or Ubuntu machine. Note that running the artifact on other versions of Microsoft Windows or other Linux versions would probably work, but it is not extensively tested and therefore not officially supported.
 
 ## Getting started 
-The easiest way to run the artifact is by running the .JAR file, since it only needs a Java Runtime Environment (JRE) installed to work. To run using Docker images, there is a file named "Steps" in the directory inside the "Docker" directory, which is located in "ExecuteApplication/Ubuntu" and also "ExecuteApplication/Windows" directories. In this file, a step-by-step for configuring Docker to run the application using the Docker image is described.
+The easiest way to run the artifact is by running the .JAR file, since it only needs a Java Runtime Environment (JRE) installed to work. To run using Docker images, there are files named "Steps.txt" inside the "Docker" directory, which is located in "ExecuteApplication/Ubuntu" and also in "ExecuteApplication/Windows" directories. In this file, a step-by-step for configuring Docker to run the application using its container image is described.
 
 ## Running the Simulator - Step-by-step
 
+This sections presents a step-by-step tutorial to use the artifact. Also, it is possible to watch a usage demonstration of this application in: https://www.youtube.com/watch?v=6Hsr2Q9FqZg.
 
-### 
+### 1) Setting up Environment
+
+The first step of using the simulator is environment construction. The available elements to insert are:
+- River, which cause a drone loss if it lands on them;
+- Hospital, which could be set as Source or Target;
+- Antenna, which emits waves that eventually causes bad connection to drones located in its adjacent blocks;
+- Drone, the main element. It has its own properties that are described in the next steps.
+
+This application provides two options for setting environment:
+- create an environment from scratch, inserting each element one by one. For inserting a element, select the button of the respective element, and click at the desired position on grid.
+- Use an example environment provided. To use it, go to "Menu -> London Example".
+
 
 ### 
 
