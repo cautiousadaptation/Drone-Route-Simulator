@@ -7,7 +7,7 @@ This repository contains all the resources supporting a paper at SEAMS 2019, a d
 
 As described in the accompanying paper in greater detail, the purpose of this application is to evaluate our approach, by simulating a drone route along a track between two hospitals. Through the use of this application, it is possible to observe the different behaviors in the original implementation of the drone and the drone with a wrapper developed using aspect-oriented programming.  
 
-It is written in Java in IntelliJ, and takes advantage of several Java technologies, such as the JavaFX and AspectJ.
+It is written in Java, and developed using IntelliJ IDE. Also, it takes advantage of the following Java technologies: JavaFX and AspectJ.
 
 ## Artifact structure
 This repository contains the following items:
@@ -38,10 +38,19 @@ The first step of using the simulator is environment construction. The available
 
 This application provides two options for setting environment:
 - create an environment from scratch, inserting each element one by one. For inserting a element, select the button of the respective element, and click at the desired position on grid.
-- Use an example environment provided. To use it, go to "Menu -> London Example".
+- Use an example environment provided in the application, by accessing "Menu -> London Example".
 
+### 2) Setting Drone Configuration
 
-### 
+The next step is configuring drone elements. Select a drone to manipulate its configurations:
+- Battery consumption per block: it sets the percentage of battery consumed when the selected drone move from a block to an adjacent block.
+- Battery consumption per second: it sets the percentage of battery consumed per second while the selected drone is on.
+- Initial battery: the initial percentage value for the selected drone.
+- Wrapper checkbox: Checked implies that wrapper implementation is present. Unchecked implies that the selected drone will have its original behavior.
+- Automatic checkbox: Checked implies that the selected drone will move forward trying to reach its destiny automatically. Unchecked implies that the selected drone will work by responding the following controls:
+-- R key: turn on/off the drone.
+-- SPACEBAR key: drone takes off/lands.
+-- W, A, S and D keys: drone moves up, left, down and right, respectively on grid.
 
 ## Contact
 When faced with complications regarding the setup or use of the artifact, do not hesitate to contact any of the authors for support. The authors can be reached at cautiousadaptation@gmail.com.
