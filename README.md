@@ -14,6 +14,7 @@ The simulator is implemented in Java, uses the JavaFX technology for the Graphic
 This repository contains the following items:
 
 - **README.md** - This text as Markdown.
+- **LICENSE.md** - BSD 2-Clause License.
 - **index.html** - This text as HTML.
 - **src/** - Source directory containing the SEAMS demo application code.
 - **aspectj-1.9.2/** - Directory for the AspectJ resources used in the aspect implementation.
@@ -68,7 +69,7 @@ By clicking on the "Restart" button, the user restarts the execution, i.e., the 
 
 ## License
 
-This artifact is licensed under the BSD 2-Clause License; the artifact may not be used except in compliance with the License. Conditions to redistribute and use this artifact in source and binary forms, with or without modification, are detailed in LICENSE file.
+This artifact is licensed under the BSD 2-Clause License; the artifact may not be used except in compliance with the License. Conditions to redistribute and use this artifact in source and binary forms, with or without modification, are detailed in LICENSE.md file.
 
 ## Contact
 If you have any problem to use the artifact, please do not hesitate to contact us by sending an email to cautiousadaptation@gmail.com.
