@@ -5,11 +5,11 @@
 
 
 
-2 - Open DockerImage folder in PowerShell (".../ExecuteApplication/Windows/Docker/DockerImage/");
+2 - Open DockerImage folder in PowerShell (".../Drone-Route-Simulator/ExecuteApplication/Windows/Docker/DockerImage/");
 
 
 
-3 - Execute this command in PowerShell "sudo docker build --network=host -t drone-route-simulator-windows ." for create Docker image from DockerFile;
+3 - Execute this command in PowerShell "docker build --network=host -t drone-route-simulator-windows ." for create Docker image from DockerFile;
 
 
 
