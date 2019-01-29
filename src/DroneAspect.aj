@@ -5,11 +5,11 @@ import view.drone.DroneViewImpl;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public aspect Aspect {
-    private boolean isMoveAside; pointcut safeLanding() : call (void view.drone.DroneViewImpl.safeLanding());
+public aspect DroneAspect {
+    private boolean isMoveAside; pointcut checkExceptionalConditions() : call (void view.drone.DroneViewImpl.safeLanding());
 
 
-    void around() : safeLanding() && if(
+    void around() : checkExceptionalConditions() && if(
             ((Drone)((DroneViewImpl) thisJoinPoint.getTarget()).getDrone()).getCurrentBattery()>5
             &&
             ((Drone)((DroneViewImpl) thisJoinPoint.getTarget()).getDrone()).getDistanceHospitalDestiny() <=60
@@ -36,7 +36,7 @@ public aspect Aspect {
     }
 
 
-    void around() : safeLanding() && if(
+    before() : checkExceptionalConditions() && if(
             ((Drone)((DroneViewImpl) thisJoinPoint.getTarget()).getDrone()).isOnWater()
             &&
             ((Drone)((DroneViewImpl) thisJoinPoint.getTarget()).getDrone()).isAspect()
@@ -170,10 +170,16 @@ public aspect Aspect {
             @Override
             public void run() {
 
-                if (!drone.isAutomatic()) {
+              /*  if (!drone.isAutomatic()) {
                     cancel();
                     return;
-                }
+                }*/
+
+
+
+              if(drone.isManual()){
+                  drone.setManual(false);
+              }
 
                 if (drone.isBadConnection()) {
                     droneView.stopReturnToHome();
@@ -187,6 +193,7 @@ public aspect Aspect {
 
                     System.out.println("Drone["+drone.getId()+"] "+"Arrived at destination aspect");
                     droneView.loggerController.print("Drone["+drone.getId()+"] "+"Arrived at destination aspect");
+                    drone.setManual(!drone.isAutomatic());
                     cancel();
                     return;
 
@@ -263,6 +270,7 @@ public aspect Aspect {
 
                             System.out.println("Drone["+drone.getId()+"] "+"Arrived at destination aspect");
                             droneView.loggerController.print("Drone["+drone.getId()+"] "+"Arrived at destination aspect");
+                            drone.setManual(!drone.isAutomatic());
                             cancel();
                             return;
 

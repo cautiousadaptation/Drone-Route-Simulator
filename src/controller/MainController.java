@@ -102,7 +102,7 @@ public class MainController extends Application {
         MenuBar menuBar = new MenuBar();
         VBox vBox = new VBox(menuBar);
         Menu menuExamples = new Menu("Menu");
-        MenuItem exampleLodonMenuItem = new MenuItem("London Example");
+        MenuItem exampleLodonMenuItem = new MenuItem("SEAMS Paper Example");
         menuExamples.getItems().add(exampleLodonMenuItem);
         menuBar.getMenus().add(menuExamples);
         rootAnchorPane.getChildren().add(menuBar);
@@ -417,7 +417,7 @@ public class MainController extends Application {
 
         loggerController.setTextArea(loggerTextArea);
 
-        ContextMenu contextMenu = new ContextMenu();
+        /*ContextMenu contextMenu = new ContextMenu();
         MenuItem logAnalyzerMenuItem = new MenuItem("Drone Logs Analyzer");
         contextMenu.getItems().add(logAnalyzerMenuItem);
         loggerTextArea.setContextMenu(contextMenu);
@@ -429,7 +429,7 @@ public class MainController extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
+        });*/
 
 
         ToggleGroup toggleGroup1 = new ToggleGroup();
