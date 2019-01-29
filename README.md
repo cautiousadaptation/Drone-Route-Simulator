@@ -47,10 +47,21 @@ The next step is configuring drone elements. Select a drone to manipulate its co
 - Battery consumption per second: it sets the percentage of battery consumed per second while the selected drone is on.
 - Initial battery: the initial percentage value for the selected drone.
 - Wrapper checkbox: Checked implies that wrapper implementation is present. Unchecked implies that the selected drone will have its original behavior.
-- Automatic checkbox: Checked implies that the selected drone will move forward trying to reach its destiny automatically. Unchecked implies that the selected drone will work by responding the following controls:
--- R key: turn on/off the drone.
--- SPACEBAR key: drone takes off/lands.
--- W, A, S and D keys: drone moves up, left, down and right, respectively on grid.
+- Automatic checkbox: Checked implies that the selected drone will move forward trying to reach its destiny automatically. Unchecked implies that the selected drone will work by responding the controls presented next.
+
+Controls for Manoeuvring Drones:
+- **R** key: turn on/off the drone.
+- **SPACEBAR** key: drone takes off/lands.
+- **W**, **A**, **S** and **D** keys: drone moves up, left, down and right, respectively.
+
+### 3) Starting the application
+
+The final step is start the execution of the application, by clicking the "Ready" button. That triggers the execution of each drone inserted in the enviroment simultaneously. The results are printed in a text area, where it is possible to verify the messages of each drone that is working at the moment. 
+
+To restart the execution, clicking at the "Restart" button will reset the logs's text area, and restore the initial position of the drones inserted.
+
+When the simulation ends, the logs printed can be used to analyze the cautious adaptation approach, which is reported in greater detail in the evaluation section in the accompanying paper.
+
 
 ## Contact
 When faced with complications regarding the setup or use of the artifact, do not hesitate to contact any of the authors for support. The authors can be reached at cautiousadaptation@gmail.com.
