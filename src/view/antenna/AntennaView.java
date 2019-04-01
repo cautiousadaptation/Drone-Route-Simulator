@@ -2,13 +2,15 @@ package view.antenna;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import model.entity.Antenna;
+import view.CellView;
 import view.SelectableView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AntennaView extends Group implements SelectableView {
-    public static List<AntennaView> antennaViewList = new ArrayList<>();
+public abstract class AntennaView extends Group implements SelectableView, Antenna.Listener {
+    String uniqueID = null;
+   /* public static List<AntennaView> antennaViewList = new ArrayList<>();*/
 
     /*public static void cleanAntennaViewList() {}
 
@@ -24,9 +26,15 @@ public abstract class AntennaView extends Group implements SelectableView {
 
     }*/
 
-    Object getAntenna() {
-        return null;
+    @Override
+    public String getUniqueID() {
+        return uniqueID;
     }
+
+
+    public abstract void applyStyleBadConnection();
+
+    public abstract void applyStyleNormalConnection();
 
     public Node getNode() {
         return null;
@@ -41,4 +49,11 @@ public abstract class AntennaView extends Group implements SelectableView {
     public void applyStyleSelected() {
 
     }
+
+    @Override
+    public CellView getCurrentCellView() {
+        return null;
+    }
+
+    public abstract List<CellView> getBadConnectionArea();
 }

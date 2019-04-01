@@ -2,19 +2,31 @@ package view.drone;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
+import model.entity.drone.Drone;
 import view.SelectableView;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public abstract class DroneView extends Group implements SelectableView {
-    static public List<DroneView> droneViewList = new ArrayList<>();
+public abstract class DroneView extends Group implements SelectableView, Drone.Listener {
+
+    protected String uniqueID;
+
 
     @Override
     public Node getNode() {
         return null;
     }
+
+    public abstract String getDroneLabel();
+
+    public abstract void updadePositionDroneView(Drone drone);
+
+    public abstract void applyStyleLanded();
+
+    public abstract void applyStyleTakeOff();
+
+    public abstract void applyStyleStarted();
+
+    public abstract void applyStyleShutDown();
 
     @Override
     public void removeStyleSelected() {
@@ -26,41 +38,18 @@ public abstract class DroneView extends Group implements SelectableView {
 
     }
 
-    public Object getDrone() {
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
+    }
+
+
+    /*  public Object getDrone() {
         return null;
-    }
-
-    public void notifyRunEnviroment() {
-
-    }
-
-    public void notifyBadConnection() {
-
-    }
-
-    public void notifyNormalConnection() {
-
-    }
-
-    void notifyStopEnviroment() {
-
-    }
-
-    public void notifyStrongWind() {
-
-    }
-
-    public void notifyNoStrongWind() {
-
-    }
-
-    public void notifyReset() {
-
-    }
-
-    public void eventKey(KeyCode code) {
-
-    }
+    }*/
 
    /* public static void cleanDroneViewList() {}
 

@@ -2,22 +2,28 @@ package view.river;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import model.entity.River;
 import view.SelectableView;
 
-import java.util.ArrayList;
-import java.util.List;
+public abstract class RiverView  extends Group implements SelectableView, River.Listener {
+  /*  public static List<RiverView> riverViewList = new ArrayList<>();*/
 
-public abstract class RiverView  extends Group implements SelectableView {
-    public static List<RiverView> riverViewList = new ArrayList<>();
-    Object getRiver() {
-        return null;
-    }
+   String uniqueID = null;
 
     public Node getNode() {
         return null;
     }
 
-   /* public static void cleanRiverViewList() {}
+  @Override
+  public String getUniqueID() {
+    return uniqueID;
+  }
+
+  public void setUniqueID(String uniqueID) {
+    this.uniqueID = uniqueID;
+  }
+
+    /* public static void cleanRiverViewList() {}
 
     public static List<RiverView> getRiverViewList() {
         return riverViewList;

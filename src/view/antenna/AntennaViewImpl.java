@@ -1,164 +1,111 @@
 package view.antenna;
 
-import javafx.application.Platform;
+import controller.CellController;
+import controller.EnvironmentController;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
-import model.Antenna;
+import model.entity.Antenna;
+import util.SelectHelper;
 import view.CellView;
-import view.res.EnvironmentView;
 
 import java.util.*;
 
 public class AntennaViewImpl extends AntennaView {
 
 
-    public static int COUNT_ANTENNA = 0;
-    private final Antenna antena;
-    private final ImageView imageView2;
-    private final CellView cellViewSelected;
+
+
+
+    private  CellView currentCellView;
+    private final String antennaLabel;
     private ImageView imageView;
     private List<CellView> cellViewList = new ArrayList<>();
-    private Rectangle selectedRetangle;
-    private Timer timer;
-    private TimerTask timerTask;
+    private SelectHelper selectHelper = new SelectHelper(SelectHelper.DEFAULT_COLOR);
 
 
-    public AntennaViewImpl(CellView cellViewSelected) {
-        this.cellViewSelected =  cellViewSelected;
-        EnvironmentView environmentView = cellViewSelected.getEnvironmentView();
+    public AntennaViewImpl(String uniqueID, String antennaLabel, CellView cellViewSelected) {
+        this.currentCellView =  cellViewSelected;
+        this.uniqueID = uniqueID;
+        this.antennaLabel = antennaLabel;
 
-        getBadConnectionArea(cellViewSelected);
-
-
-        COUNT_ANTENNA++;
-
-        antena = new Antenna(COUNT_ANTENNA, cellViewSelected.getI(), cellViewSelected.getJ());
 
         Label label = new Label();
-        label.setText(String.valueOf(COUNT_ANTENNA));
+        label.setText(antennaLabel);
         label.setTextFill(Color.RED);
         label.setTextAlignment(TextAlignment.CENTER);
 
-        ImageView imageView1 = new ImageView();
-        Image image1 = new Image("/view/res/antenna.png");
-        imageView1.setImage(image1);
-        this.getChildren().addAll(imageView1, label);
+        ImageView antennaImageView = new ImageView();
+        Image antennaImage = new Image("/view/res/antenna.png");
+        antennaImageView.setImage(antennaImage);
 
-        imageView2 = new ImageView();
-        Image image2 = new Image("/view/res/signal.png");
-        imageView2.setImage(image2);
+        this.getChildren().addAll(antennaImageView, label);
 
-        this.getChildren().addAll(imageView2);
-        imageView2.setVisible(false);
+        CellController.getInstance().addSelectableElementInView(this, cellViewSelected);
 
-        cellViewSelected.getChildren().add(this);
+        createBadConnectionCell();
 
-        addbadConnectionInSpecificArea();
+
+
     }
 
-    private void getBadConnectionArea( CellView cellViewSelected) {
-        EnvironmentView environmentView = cellViewSelected.getEnvironmentView();
+    private void createBadConnectionCell() {
+        CellController cellController = CellController.getInstance();
+        int i = currentCellView.getRowPosition();
+        int j = currentCellView.getCollunmPosition();
 
-        int i = cellViewSelected.getI();
-        int j = cellViewSelected.getJ();
 
-        cellViewList.add(environmentView.getCellFrom(i-1,j-1));
-        cellViewList.add(environmentView.getCellFrom(i-1,j));
-        cellViewList.add(environmentView.getCellFrom(i-1,j+1));
-        cellViewList.add(environmentView.getCellFrom(i,j-1));
-        cellViewList.add(environmentView.getCellFrom(i,j));
-        cellViewList.add(environmentView.getCellFrom(i,j+1));
-        cellViewList.add(environmentView.getCellFrom(i+1,j-1));
-        cellViewList.add(environmentView.getCellFrom(i+1,j));
-        cellViewList.add(environmentView.getCellFrom(i+1,j+1));
+        if(i-1 > 0 && j-1 >0){
+            cellViewList.add(cellController.getCellViewFrom(i-1,j-1));
+        }
+        if(i-1 > 0){
+            cellViewList.add(cellController.getCellViewFrom(i-1,j));
+        }
+        if(i-1 > 0 && j+1 < EnvironmentController.getInstance().getCountCollumn()-1){
+            cellViewList.add(cellController.getCellViewFrom(i-1,j+1));
+        }
+
+        if(j-1 > 0){
+            cellViewList.add(cellController.getCellViewFrom(i,j-1));
+        }
+
+        cellViewList.add(cellController.getCellViewFrom(i,j));
+
+        if(j+1 < EnvironmentController.getInstance().getCountCollumn()-1){
+            cellViewList.add(cellController.getCellViewFrom(i,j+1));
+        }
+
+        if(i+1 < EnvironmentController.getInstance().getCountRow() -1 && j+1 < EnvironmentController.getInstance().getCountCollumn() -1) {
+            cellViewList.add(cellController.getCellViewFrom(i + 1, j - 1));
+        }
+
+        if(i+1 < EnvironmentController.getInstance().getCountRow() -1) {
+            cellViewList.add(cellController.getCellViewFrom(i+1,j));
+        }
+
+        if(i+1 < EnvironmentController.getInstance().getCountRow()-1 && j+1 < EnvironmentController.getInstance().getCountCollumn() ) {
+            cellViewList.add(cellController.getCellViewFrom(i+1,j+1));
+        }
     }
-
-
-    private void addbadConnectionInSpecificArea() {
-
-
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Random random = new Random();
-                double randomDouble = random.nextDouble();
-
-
-
-                Platform.runLater(() -> {
-
-                    if(randomDouble>0.6){
-                        for(CellView cellView : cellViewList){
-                            cellView.setBadConnection(true);
-                        }
-
-                        imageView2.setVisible(true);
-                    }else {
-                        for(CellView cellView : cellViewList){
-                            cellView.setBadConnection(false);
-                        }
-
-                        imageView2.setVisible(false);
-                    }
-
-
-
-
-                });
-            }
-        };
-
-        timer.scheduleAtFixedRate(timerTask, 0, 2000);
-/*
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Random random = new Random();
-                double randomDouble = random.nextDouble();
-
-
-
-                Platform.runLater(() -> {
-
-                    if(randomDouble>0.6){
-                        for(CellView cellView : cellViewList){
-                            cellView.setBadConnection(true);
-                        }
-
-                        imageView2.setVisible(true);
-                    }else {
-                        for(CellView cellView : cellViewList){
-                            cellView.setBadConnection(false);
-                        }
-
-                        imageView2.setVisible(false);
-                    }
-
-
-
-
-                });
-
-
-
-
-
-
-            }
-        }, 0, 2000);*/
-    }
-
 
 
     @Override
-    public Object getAntenna() {
-        return antena;
+    public void applyStyleBadConnection() {
+        for(CellView cellView : cellViewList){
+            CellController.getInstance().getCellFrom(cellView).setBadConnection(true);
+        }
+
+    }
+
+    @Override
+    public void applyStyleNormalConnection() {
+        for(CellView cellView : cellViewList){
+            CellController.getInstance().getCellFrom(cellView).setBadConnection(false);
+        }
+
     }
 
     @Override
@@ -167,75 +114,58 @@ public class AntennaViewImpl extends AntennaView {
     }
 
     @Override
-    public void removeStyleSelected() {
-        if(selectedRetangle!= null){
-            this.getChildren().remove(selectedRetangle);
+    public CellView getCurrentCellView() {
+        return currentCellView;
+    }
 
-            selectedRetangle = null;
+    @Override
+    public List<CellView> getBadConnectionArea() {
+        return cellViewList;
+    }
+
+    @Override
+    public void removeStyleSelected(){
+        if(getChildren().contains(selectHelper)){
+            getChildren().remove(selectHelper);
         }
-    }
 
-
-    public static List<AntennaView> getAntennaViewList() {
-        return antennaViewList;
-    }
-
-
-    public static void removeAntennaViewFromList(AntennaView antennaView) {
-        if(antennaViewList.contains(antennaView)){
-            AntennaViewImpl antennaViewImpl = (AntennaViewImpl) antennaView;
-
-            for(CellView cellView : antennaViewImpl.cellViewList){
-                cellView.setBadConnection(false);
-            }
-
-            antennaViewImpl.cellViewList.clear();
-            antennaViewList.remove(antennaView);
-            antennaViewImpl.timerTask.cancel();
-            antennaViewImpl.timer.cancel();
-            antennaViewImpl.timer.purge();
-
-        }
-    }
-
-
-    public static  void addAntennaViewFromList(AntennaView antennaView) {
-        if(!antennaViewList.contains(antennaView)){
-            antennaViewList.add(antennaView);
-        }
-    }
-
-
-
-
-    public static void cleanAntennaViewList() {
-        for(AntennaView antennaView : new ArrayList<>(antennaViewList)){
-            removeAntennaViewFromList(antennaView);
-        }
-    }
-
-
-
-
-    public static void setAntennaViewList(List<AntennaView> antennaViewList) {
-        AntennaViewImpl.antennaViewList = antennaViewList;
     }
 
     @Override
     public void applyStyleSelected() {
-        if(selectedRetangle == null){
-            selectedRetangle = new Rectangle(30,30);
-            selectedRetangle.setFill(Color.TRANSPARENT);
-            selectedRetangle.setStrokeWidth(3);
-            selectedRetangle.setStroke(Color.BLUE);
-            this.getChildren().add(selectedRetangle);
-
+        if(!getChildren().contains(selectHelper)){
+            getChildren().add(selectHelper);
         }
 
+    }
 
+    @Override
+    public void onChange(Antenna antenna, String methodName, Object oldValue, Object newValue) {
+        if(antenna.getUniqueID() != uniqueID){
+            return;
+        }
 
+        if(methodName.equals("setBadConnection") && !((Boolean) oldValue) && (Boolean) newValue){
+            applyStyleBadConnection();
 
+            return;
+        }
 
+        if(methodName.equals("setBadConnection") && ((Boolean) oldValue) && !(Boolean) newValue){
+            applyStyleNormalConnection();
 
+            return;
+        }
+        if(methodName.equals("setSelected")
+                &&!(Boolean) oldValue && (Boolean) newValue){
+            applyStyleSelected();
+            return;
+        }
+
+        if(methodName.equals("setSelected")
+                && (Boolean) oldValue && !(Boolean) newValue){
+            removeStyleSelected();
+            return;
+        }
     }
 }

@@ -3,20 +3,18 @@ package view.river;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import model.River;
+import model.entity.River;
+import util.SelectHelper;
 import view.CellView;
 
-import java.util.ArrayList;
-import java.util.List;
 
+public class RiverViewImpl extends RiverView implements River.Listener{
+    private final CellView currentCellView;
+    SelectHelper selectHelper = new SelectHelper(Color.RED);
 
-public class RiverViewImpl extends RiverView {
+    public RiverViewImpl(String uniqueID, CellView currentCellView) {
+        this.uniqueID = uniqueID;
 
-    private final River river;
-
-    public RiverViewImpl(CellView cellView) {
-
-        river = new River(cellView.getI(), cellView.getJ());
         Rectangle rectangle = new Rectangle( 30, 30);
         rectangle.setStroke(Color.BLUE);
         rectangle.setStrokeWidth(1);
@@ -24,38 +22,64 @@ public class RiverViewImpl extends RiverView {
 
         this.getChildren().add(rectangle);
 
-        cellView.getChildren().add(this);
+        currentCellView.getChildren().add(this);
+        this.currentCellView = currentCellView;
 
 
     }
 
     @Override
-    public void removeStyleSelected() {
-        ((Rectangle)this.getChildren().get(0)).setStroke(Color.BLUE);
-        ((Rectangle)this.getChildren().get(0)).setStrokeWidth(1);
+    public void removeStyleSelected(){
+        if(getChildren().contains(selectHelper)){
+            getChildren().remove(selectHelper);
+        }
+
     }
 
     @Override
     public void applyStyleSelected() {
-        /*String style = "-fx-stroke: " + "black" + ";);";
-        style+= "-fx-stroke-width: "+"50"+";";*/
+        if(!getChildren().contains(selectHelper)){
+            getChildren().add(selectHelper);
+        }
 
-        ((Rectangle)this.getChildren().get(0)).setStroke(Color.BLACK);
-        ((Rectangle)this.getChildren().get(0)).setStrokeWidth(3.0);
     }
 
-    @Override
+
+  /*  @Override
     public Object getRiver() {
         return river;
-    }
+    }*/
 
     @Override
     public Node getNode() {
         return this;
     }
 
+    @Override
+    public CellView getCurrentCellView() {
+        return currentCellView;
+    }
 
-    public void setRiverViewList(List<RiverView> riverViewList) {
+    @Override
+    public void onChange(River river, String methodName, Object oldValue, Object newValue) {
+        if(uniqueID != river.getUniqueID()){
+            return;
+        }
+
+        if(methodName.equals("setSelected")
+                &&!(Boolean) oldValue && (Boolean) newValue){
+            applyStyleSelected();
+            return;
+        }
+
+        if(methodName.equals("setSelected")
+                && (Boolean) oldValue && !(Boolean) newValue){
+            removeStyleSelected();
+            return;
+        }
+    }
+
+    /*public void setRiverViewList(List<RiverView> riverViewList) {
         RiverViewImpl.riverViewList = riverViewList;
     }
 
@@ -83,6 +107,6 @@ public class RiverViewImpl extends RiverView {
         if(!riverViewList.contains(riverView)){
             riverViewList.add(riverView);
         }
-    }
+    }*/
 }
 

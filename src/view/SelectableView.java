@@ -1,13 +1,21 @@
 package view;
 
-import javafx.scene.Group;
 import javafx.scene.Node;
 
-public  interface  SelectableView  {
+import java.security.acl.Group;
+
+public interface SelectableView  {
 
     Node getNode();
+
+    CellView getCurrentCellView();
+
+    String getUniqueID();
 
     void removeStyleSelected();
 
     void applyStyleSelected();
+
+
+
 }
