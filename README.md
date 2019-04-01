@@ -19,7 +19,6 @@ This repository contains the following items:
 - **src/** - Source directory containing the SEAMS demo application code.
 - **aspectj-1.9.2/** - Directory for the AspectJ resources used in the aspect implementation.
 - **ExecuteApplication/** - Directory including Docker image and .JAR files for executing in Ubuntu and Windows, each one having its proper instructions to run.
-- **SEAMS_2019___Cautious_Adaptation.pdf** - Submitted version of our research track paper.
 
 ## Platform requirements
 The executable artifact is available in both a single JAR format and Docker images to run on Windows 10 or Ubuntu machines. Note that the artifact may run on other Windows and Linux versions, but it was not extensively tested in all operating systems.
