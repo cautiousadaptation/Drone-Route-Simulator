@@ -10,8 +10,8 @@ import model.entity.Hospital;
 import model.entity.River;
 import model.entity.boat.Boat;
 import model.entity.drone.Drone;
-import util.ClickOutsideRegion;
-import util.MinimumHospitalQuantityException;
+import util.exceptions.ClickOutsideRegionException;
+import util.exceptions.MinimumHospitalQuantityException;
 import util.UniqueIDGenenator;
 import view.CellView;
 import view.SelectableView;
@@ -260,7 +260,7 @@ public class EnvironmentController {
     }
 
 
-    public Drone createDrone(SelectableView selectedSelectableView) throws ClickOutsideRegion, MinimumHospitalQuantityException {
+    public Drone createDrone(SelectableView selectedSelectableView) throws ClickOutsideRegionException, MinimumHospitalQuantityException {
         clearSelectionOnAllSelectableView();
 
         CellView selectedCellView = (CellView) selectedSelectableView;
@@ -273,7 +273,7 @@ public class EnvironmentController {
         }
 
         if (selectedCellView == null) {
-            throw new ClickOutsideRegion();
+            throw new ClickOutsideRegionException();
         }
 
 
@@ -293,7 +293,7 @@ public class EnvironmentController {
 
     }
 
-    public Hospital createHospital(SelectableView selectedSelectableView) throws ClickOutsideRegion {
+    public Hospital createHospital(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
 
         clearSelectionOnAllSelectableView();
 
@@ -303,7 +303,7 @@ public class EnvironmentController {
 
 
         if (selectedCellView == null) {
-            throw new ClickOutsideRegion();
+            throw new ClickOutsideRegionException();
         }
 
 
@@ -319,7 +319,7 @@ public class EnvironmentController {
 
     }
 
-    public River createRiver(SelectableView selectedSelectableView) throws ClickOutsideRegion {
+    public River createRiver(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
 
         clearSelectionOnAllSelectableView();
 
@@ -329,7 +329,7 @@ public class EnvironmentController {
 
 
         if (selectedCellView == null) {
-            throw new ClickOutsideRegion();
+            throw new ClickOutsideRegionException();
         }
 
         String uniqueID = UniqueIDGenenator.generate();
@@ -342,7 +342,7 @@ public class EnvironmentController {
 
     }
 
-    public Antenna createAntenna(SelectableView selectedSelectableView) throws ClickOutsideRegion {
+    public Antenna createAntenna(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
 
         clearSelectionOnAllSelectableView();
 
@@ -351,7 +351,7 @@ public class EnvironmentController {
 
 
         if (selectedCellView == null) {
-            throw new ClickOutsideRegion();
+            throw new ClickOutsideRegionException();
         }
 
 
@@ -364,12 +364,12 @@ public class EnvironmentController {
 
     }
 
-    public Boat createBoat(SelectableView selectedSelectableView) throws ClickOutsideRegion {
+    public Boat createBoat(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
 
        RiverView riverView = RiverController.getInstance().getRiverViewFrom(selectedSelectableView);
 
        if(riverView == null){
-           throw new ClickOutsideRegion("You must put the BoatView on top of a RiverView. ");
+           throw new ClickOutsideRegionException("You must put the BoatView on top of a RiverView. ");
        }
 
         clearSelectionOnAllSelectableView();
@@ -379,7 +379,7 @@ public class EnvironmentController {
 
 
         if (selectedCellView == null) {
-            throw new ClickOutsideRegion();
+            throw new ClickOutsideRegionException();
         }
 
 

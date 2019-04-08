@@ -7,11 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.entity.River;
+import util.EnvironmentMarshal;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.File;
 
 public class MenuController {
@@ -39,9 +36,9 @@ public class MenuController {
         rootAnchorPane.getChildren().add(menuBar);
 
         saveEnvironmentItemMenu.setOnAction(event -> {
-            File settingEnvironmentFile = createXmlWithSettingEnvironment();
-            configureFileChooserSave();
-            openChooser();
+            EnvironmentMarshal.serialize(new File("teste.xml"));
+            //configureFileChooserSave();
+           // openChooser();
         });
 
         loadEnvironmentItemMenu.setOnAction(event -> {
@@ -75,27 +72,4 @@ public class MenuController {
         return fileChooser.showOpenDialog(primaryStage);
     }
 
-    private File createXmlWithSettingEnvironment() {
-        File file = new File("C:\\file.xml");
-        JAXBContext jaxbContext = null;
-        try {
-            jaxbContext = JAXBContext.newInstance(River.class);
-
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-            // output pretty printed
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            for(River river : RiverController.getInstance().riverMap.values()){
-                jaxbMarshaller.marshal(river, file);
-                jaxbMarshaller.marshal(river, System.out);
-            }
-
-            return file;
-
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 }

@@ -3,9 +3,13 @@ package model.entity;
 
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement(name = "river")
+//@XmlType(propOrder = { "uniqueID", "rowPosition", "collunmPosition", "selected" })
 public class River extends Entity{
 
     public static int COUNT_RIVER = 0;
@@ -22,44 +26,49 @@ public class River extends Entity{
         COUNT_RIVER++;
     }
 
+    public River() {
+    }
+
     public interface Listener{
         public void onChange(River river, String methodName, Object oldValue, Object newValue);
     }
 
-
+    @XmlElement()
     public int getCollunmPosition() {
         return collunmPosition;
     }
 
-    @XmlElement
+
     public void setCollunmPosition(int collunmPosition) {
         this.collunmPosition = collunmPosition;
     }
 
+    @XmlElement()
     public int getRowPosition() {
         return rowPosition;
     }
 
-    @XmlElement
+
     public void setRowPosition(int rowPosition) {
         this.rowPosition = rowPosition;
     }
 
+
+    @XmlElement()
     public String getUniqueID() {
         return uniqueID;
     }
 
-    @XmlElement
     public void setUniqueID(String uniqueID) {
         this.uniqueID = uniqueID;
     }
 
+    @XmlElement()
     public Boolean getSelected() {
         return selected;
     }
 
 
-    @XmlElement
     public void setSelected(boolean selected) {
         boolean oldValue = this.selected;
         boolean newValue = selected;
@@ -68,9 +77,10 @@ public class River extends Entity{
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
-    public List<Listener> getListeners() {
+
+  /*  public List<Listener> getListeners() {
         return listeners;
-    }
+    }*/
 
     public void setListeners(List<Listener> listeners) {
         this.listeners = listeners;

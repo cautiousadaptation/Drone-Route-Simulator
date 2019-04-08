@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,11 +14,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.entity.Hospital;
 import model.entity.drone.Drone;
+import util.StopWatch;
 import util.Wrapper;
 import view.SelectableView;
 import view.drone.DroneView;
 import view.hospital.HospitalView;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class MainController extends Application {
@@ -178,6 +183,8 @@ public class MainController extends Application {
 
         });
 
+
+
         startToggleButton.setOnAction(event -> {
 
 
@@ -205,9 +212,16 @@ public class MainController extends Application {
             loggerController.clear();
 
 
-        });
+          //  salvarLogsParaExperimento();
+
+            });
+
+
+
 
         restartToggleButton.setOnAction(event -> {
+
+            quantidadeDeExecucoes[0]++;
 
             environmentController.consumeReset();
 
@@ -351,6 +365,60 @@ public class MainController extends Application {
 //        });
 
 
+
+    }
+
+    boolean[] deveEntrar = {true};
+    final int[] quantidadeDeExecucoes = {1};
+    private void salvarLogsParaExperimento() {
+        //todo isso foi criado  para o experimento
+
+        if(deveEntrar[0]) {
+            PrintWriter writer = null;
+            try {
+                writer = new PrintWriter("arquivoCom10Execuções.txt", "UTF-8");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            //vc deve clicar no start e fica resetando automaticamente
+            ;
+            int tempoMaximoEmMilissegundosDeCadaExecução = 10000;
+            int quantidadeMaximaDeExecucoes = 2;
+
+            PrintWriter finalWriter = writer;
+            PrintWriter finalWriter1 = writer;
+            new StopWatch(tempoMaximoEmMilissegundosDeCadaExecução, tempoMaximoEmMilissegundosDeCadaExecução) {
+                @Override
+                public void task() {
+
+                    Platform.runLater(() -> {
+                        deveEntrar[0] = false;
+                        finalWriter.println("EXECUÇÃO " + quantidadeDeExecucoes[0]);
+                        finalWriter.println(LoggerController.getInstance().getTextArea().getText()+"\n");
+                        restartToggleButton.fire();
+                        startToggleButton.fire();
+
+                    });
+
+
+                }
+
+                @Override
+                public boolean conditionStop() {
+                    if(quantidadeDeExecucoes[0] == quantidadeMaximaDeExecucoes){
+                        finalWriter.println("EXECUÇÃO " + quantidadeDeExecucoes[0]);
+                        finalWriter.println(LoggerController.getInstance().getTextArea().getText()+"\n");
+                        finalWriter1.close();
+                        return true;
+                    }
+                    return false;
+                }
+            };
+
+        }
     }
 
 
