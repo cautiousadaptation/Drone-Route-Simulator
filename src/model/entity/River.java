@@ -4,24 +4,23 @@ package model.entity;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "river")
-//@XmlType(propOrder = { "uniqueID", "rowPosition", "collunmPosition", "selected" })
+//@XmlType(propOrder = { "uniqueID", "rowPosition", "columnPosition", "selected" })
 public class River extends Entity{
 
     public static int COUNT_RIVER = 0;
     private String uniqueID;
-    private Integer rowPosition, collunmPosition;
+    private Integer rowPosition, columnPosition;
     private Boolean selected = false;
     private List<Listener> listeners = new ArrayList<>();
 
-    public River(String uniqueID, int rowPosition, int collunmPosition) {
+    public River(String uniqueID, int rowPosition, int columnPosition) {
         setUniqueID(uniqueID);
         setRowPosition(rowPosition);
-        setCollunmPosition(collunmPosition);
+        setColumnPosition(columnPosition);
 
         COUNT_RIVER++;
     }
@@ -34,13 +33,13 @@ public class River extends Entity{
     }
 
     @XmlElement()
-    public int getCollunmPosition() {
-        return collunmPosition;
+    public int getColumnPosition() {
+        return columnPosition;
     }
 
 
-    public void setCollunmPosition(int collunmPosition) {
-        this.collunmPosition = collunmPosition;
+    public void setColumnPosition(int columnPosition) {
+        this.columnPosition = columnPosition;
     }
 
     @XmlElement()

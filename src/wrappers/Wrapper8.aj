@@ -255,8 +255,7 @@ public aspect Wrapper8 {
     private void recoveryDrone(BoatView boatView, DroneView droneView) {
 
         Drone drone = DroneController.getInstance().getDroneFrom(droneView.getUniqueID());
-        Hospital hospital = HospitalController.getInstance().getHospitalFrom(drone.getDestinyHopistal().getUniqueID());
-        HospitalView hospitalView = HospitalController.getInstance().getHospitalViewFrom(hospital.getUniqueID());
+        CellView destinyCellView = CellController.getInstance().getCellViewFrom(drone.getDestinyCell().getUniqueID());
 
         new StopWatch(0, 1000) {
 
@@ -283,7 +282,7 @@ public aspect Wrapper8 {
                     }else {
                         //boat go hospital
 
-                        RiverView newCloserRiverView = getCloserRiverView(drone, hospitalView);
+                        RiverView newCloserRiverView = getCloserRiverView(drone, destinyCellView);
 
                         if(!lastCloserRiverViewInMap.containsKey(drone)){
                             lastCloserRiverViewInMap.put(drone, RiverController.getInstance().getRiverViewFrom(boatView.getCurrentCellView()));
@@ -300,7 +299,7 @@ public aspect Wrapper8 {
 
             @Override
             public boolean conditionStop() {
-                if (CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(), hospitalView) == 30) {
+                if (CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
 
                     dronesAreOnBoatInSet.remove(drone);
                     System.out.println("Drone[" + drone.getLabel() + "] " + "Arrived at Destination");
@@ -322,7 +321,7 @@ public aspect Wrapper8 {
     }
 
 
-    private RiverView getCloserRiverView(Drone drone, HospitalView hospitalView) {
+    private RiverView getCloserRiverView(Drone drone, CellView cellView) {
         CellController cellController = CellController.getInstance();
         RiverView closerRiverView = null;
         double closerDistance = 99999999D;
@@ -333,7 +332,7 @@ public aspect Wrapper8 {
                 continue;
             }
 
-            double tempDistance = cellController.calculeteDistanceFrom(riverView, hospitalView);
+            double tempDistance = cellController.calculeteDistanceFrom(riverView, cellView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;

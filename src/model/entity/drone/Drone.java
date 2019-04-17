@@ -2,7 +2,9 @@ package model.entity.drone;
 
 
 
+import controller.CellController;
 import javafx.scene.input.KeyCode;
+import model.Cell;
 import model.entity.Entity;
 import model.entity.Hospital;
 import util.Wrapper;
@@ -16,8 +18,10 @@ import java.util.List;
 public class Drone extends Entity {
 
     //Do not changes in Runtime
-    private Hospital sourceHospital;
-    private Hospital destinyHopistal;
+
+    private Cell sourceCell = CellController.getInstance().getCellFrom(0,0);
+    private Cell destinyCell = CellController.getInstance().getCellFrom(0,0);
+
     private String uniqueID;
     private Integer initialPosistionI, initialPositionJ;
     private Double initialBattery = 12.D;
@@ -66,15 +70,13 @@ public class Drone extends Entity {
     private String label = "";
 
 
-    public Drone(String uniqueID, String label, Hospital sourceHospital, Hospital destinyHopistal, int initialPositionI, Integer initialPositionJ) {
+    public Drone(String uniqueID, String label, int initialPositionI, Integer initialPositionJ) {
         this.uniqueID = uniqueID;
         this.currentPositionI = initialPositionI;
         this.currentPositionJ = initialPositionJ;
         this.initialPosistionI = initialPositionI;
         this.initialPositionJ = initialPositionJ;
 
-        this.sourceHospital = sourceHospital;
-        this.destinyHopistal = destinyHopistal;
         this.label = label;
 
         COUNT_DRONE++;
@@ -532,19 +534,15 @@ public class Drone extends Entity {
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
 
-    public Hospital getSourceHospital() {
-        return sourceHospital;
+    public Cell getSourceCell() {
+        return sourceCell;
     }
 
-    public Hospital getDestinyHopistal() {
-        return destinyHopistal;
-    }
+    public void setSourceCell(Cell sourceCell) {
+        Cell oldValue = this.sourceCell;
+        Cell newValue = sourceCell;
 
-    public void setSourceHospital(Hospital sourceHospital) {
-        Hospital oldValue = this.sourceHospital;
-        Hospital newValue = sourceHospital;
-
-        this.sourceHospital = sourceHospital;
+        this.sourceCell = sourceCell;
 
         if(oldValue == newValue){
             return;
@@ -553,18 +551,24 @@ public class Drone extends Entity {
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
 
-    public void setDestinyHopistal(Hospital destinyHopistal) {
-        Hospital oldValue = this.destinyHopistal;
-        Hospital newValue = destinyHopistal;
+    public Cell getDestinyCell() {
+        return destinyCell;
+    }
+
+    public void setDestinyCell(Cell destinyCell) {
+        Cell oldValue = this.destinyCell;
+        Cell newValue = destinyCell;
+
+        this.destinyCell = destinyCell;
 
         if(oldValue == newValue){
             return;
         }
 
-        this.destinyHopistal = destinyHopistal;
-
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
+
+
 
     public boolean isGoingManualToDestiny() {
         return isGoingManualToDestiny;

@@ -2,7 +2,6 @@ package view.drone;
 
 
 import controller.CellController;
-import controller.DroneController;
 import controller.LoggerController;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -16,7 +15,7 @@ import model.entity.drone.DroneBusinessObject;
 import util.SelectHelper;
 import util.Wrapper;
 import view.CellView;
-import view.res.EnvironmentView;
+import view.EnvironmentView;
 
 
 public class DroneViewImpl extends DroneView {

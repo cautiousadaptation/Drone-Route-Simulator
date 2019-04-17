@@ -1,5 +1,7 @@
 package model.entity.boat;
 
+import controller.CellController;
+import model.Cell;
 import model.entity.Entity;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,9 @@ public class Boat extends Entity {
     private List<Listener> listeners = new ArrayList<>();
     private String label;
     private boolean started = false;
+
+    private Cell sourceCell = CellController.getInstance().getCellFrom(0,0);
+    private Cell destinyCell = CellController.getInstance().getCellFrom(0,0);
 
     public Boat(String uniqueID, String label, int initialRowPosition, int initialCollunmPosition) {
         this.uniqueID = uniqueID;
@@ -146,6 +151,40 @@ public class Boat extends Entity {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Cell getSourceCell() {
+        return sourceCell;
+    }
+
+    public void setSourceCell(Cell sourceCell) {
+        Cell oldValue = this.sourceCell;
+        Cell newValue = sourceCell;
+
+        this.sourceCell = sourceCell;
+
+        if(oldValue == newValue){
+            return;
+        }
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+    public Cell getDestinyCell() {
+        return destinyCell;
+    }
+
+    public void setDestinyCell(Cell destinyCell) {
+        Cell oldValue = this.destinyCell;
+        Cell newValue = destinyCell;
+
+        this.destinyCell = destinyCell;
+
+        if(oldValue == newValue){
+            return;
+        }
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
 
     public List<Listener> getListeners() {

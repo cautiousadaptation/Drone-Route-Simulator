@@ -3,7 +3,7 @@ package model.entity.drone;
 import controller.*;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
-import model.entity.Hospital;
+import model.Cell;
 import util.StopWatch;
 import view.CellView;
 import view.SelectableView;
@@ -429,7 +429,7 @@ public class DroneBusinessObject {
     }
 
     static synchronized public void updateDistanceHospitalDestiny(Drone selectedDrone) {
-        double distanceHospitalDestiny = calculeteDistanceFrom(selectedDrone, selectedDrone.getDestinyHopistal());
+        double distanceHospitalDestiny = calculeteDistanceFrom(selectedDrone, selectedDrone.getDestinyCell());
         // System.out.println("distanceHospitalDestiny"+ distanceHospitalDestiny);
 
 
@@ -437,17 +437,17 @@ public class DroneBusinessObject {
     }
 
     static synchronized public void updateDistanceHospitalSource(Drone selectedDrone) {
-        double distanceHospitalSource = calculeteDistanceFrom(selectedDrone, selectedDrone.getSourceHospital());
+        double distanceHospitalSource = calculeteDistanceFrom(selectedDrone, selectedDrone.getSourceCell());
         // System.out.println("distanceHospitalSource"+ distanceHospitalSource);
         selectedDrone.setDistanceHospitalSource(distanceHospitalSource);
     }
 
-    public static double calculeteDistanceFrom(Drone selectedDrone, Hospital hospital) {
+    public static double calculeteDistanceFrom(Drone selectedDrone, Cell cell) {
 
         int xInitial = (selectedDrone.getCurrentPositionJ() + 1) * 30,
-                xFinal = (hospital.getCollunmPosition() + 1) * 30,
+                xFinal = (cell.getColumnPosition() + 1) * 30,
                 yInitial = (selectedDrone.getCurrentPositionI() + 1) * 30,
-                yFinal = (hospital.getRowPosition() + 1) * 30;
+                yFinal = (cell.getRowPosition() + 1) * 30;
 
         return Math.sqrt(((xFinal - xInitial) * (xFinal - xInitial)) + ((yFinal - yInitial) * (yFinal - yInitial)));
 
@@ -658,10 +658,10 @@ public class DroneBusinessObject {
                     CellView droneCellView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID()).getCurrentCellView();
                     if(drone.isReturningToHome()){
                         //go to source hospital (return to home)
-                        hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getSourceHospital().getUniqueID()).getCurrentCellView();
+                        hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getSourceCell().getUniqueID()).getCurrentCellView();
                     }else {
                         //go to destiny hospital (to go destiny)
-                        hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getDestinyHopistal().getUniqueID()).getCurrentCellView();
+                        hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getDestinyCell().getUniqueID()).getCurrentCellView();
                     }
 
                     mustGO = closeDirection(droneCellView, hopitalCellView);
@@ -1038,8 +1038,8 @@ public class DroneBusinessObject {
         currentDrone.setIsTookOff(false);
         currentDrone.setStarted(false);
         currentDrone.setLanding(false);
-        currentDrone.setDistanceHospitalSource(calculeteDistanceFrom(currentDrone, currentDrone.getSourceHospital()));
-        currentDrone.setDistanceHospitalDestiny(calculeteDistanceFrom(currentDrone, currentDrone.getDestinyHopistal()));
+        currentDrone.setDistanceHospitalSource(calculeteDistanceFrom(currentDrone, currentDrone.getSourceCell()));
+        currentDrone.setDistanceHospitalDestiny(calculeteDistanceFrom(currentDrone, currentDrone.getDestinyCell()));
         mustStopReturnToHomeStopWatch = true;
         /*if (returnToHomeStopWatch != null) {
             returnToHomeStopWatch.stop();

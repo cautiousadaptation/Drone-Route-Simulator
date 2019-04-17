@@ -1,15 +1,17 @@
 package controller;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.xml.sax.SAXException;
 import util.EnvironmentMarshal;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
+import java.io.IOException;
 
 public class MenuController {
     private Stage primaryStage;
@@ -36,14 +38,50 @@ public class MenuController {
         rootAnchorPane.getChildren().add(menuBar);
 
         saveEnvironmentItemMenu.setOnAction(event -> {
-            EnvironmentMarshal.serialize(new File("teste.xml"));
-            //configureFileChooserSave();
-           // openChooser();
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose where you want to save (.xml)");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("xml files (*.xml)", "*.xml");
+            fileChooser.getExtensionFilters().add(extFilter);
+            fileChooser.setInitialFileName("environment.xml");
+            File selectedFile = fileChooser.showSaveDialog(primaryStage);
+
+            try {
+                boolean savedSuccessfully = EnvironmentMarshal.serialize(selectedFile);
+
+                if(savedSuccessfully){
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION,  "saved Successfully", ButtonType.OK );
+                    alert.showAndWait();
+
+                }
+
+            } catch (ParserConfigurationException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR,  "Error saving" , ButtonType.OK );
+                alert.showAndWait();
+                e.printStackTrace();
+            } catch (TransformerException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR,  "Error saving", ButtonType.OK );
+                alert.showAndWait();
+                e.printStackTrace();
+            }
+
+
         });
 
         loadEnvironmentItemMenu.setOnAction(event -> {
             configureFileChooserLoad();
-            openChooser();
+            File selectedFile = openChooser();
+
+            try {
+                boolean successfully = EnvironmentMarshal.parser(selectedFile);
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            }
         });
 
         exitItemMenu.setOnAction(event -> {
@@ -63,7 +101,7 @@ public class MenuController {
 
 
     private void configureFileChooserLoad() {
-        fileChooser.setTitle("Choose text file with environment settings (.xml)");
+        fileChooser.setTitle("Choose xml file with environment settings (.xml)");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Xml Files","*.xml"));
 
     }

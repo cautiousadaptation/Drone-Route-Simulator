@@ -250,11 +250,11 @@ public class DroneAutomaticController extends DroneController {
     }
 
     @Override
-    public Drone createDrone(String uniqueID, String droneLabel, Hospital sourceHospital,
-                             Hospital destinyHospital, CellView currentCellView) {
+    public Drone createDrone(String uniqueID, String droneLabel,
+                             CellView currentCellView) {
 
 
-        Drone drone  = new Drone(uniqueID, droneLabel,sourceHospital, destinyHospital, currentCellView.getRowPosition(),
+        Drone drone  = new Drone(uniqueID, droneLabel, currentCellView.getRowPosition(),
                 currentCellView.getCollunmPosition());
 
         droneMap.put(uniqueID, drone);
@@ -313,10 +313,10 @@ public class DroneAutomaticController extends DroneController {
         CellView droneCellView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID()).getCurrentCellView();
         if(drone.isReturningToHome()){
             //go to source hospital (return to home)
-             hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getSourceHospital().getUniqueID()).getCurrentCellView();
+             hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getSourceCell().getUniqueID()).getCurrentCellView();
         }else {
             //go to destiny hospital (to go destiny)
-             hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getDestinyHopistal().getUniqueID()).getCurrentCellView();
+             hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getDestinyCell().getUniqueID()).getCurrentCellView();
         }
 
 

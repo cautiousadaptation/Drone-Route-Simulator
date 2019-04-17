@@ -1,24 +1,25 @@
 package controller;
 
+import controller.settings_panel.BoatSettingsPanelController;
+import controller.settings_panel.DroneSettingsPanelController;
+import controller.settings_panel.SettingsPanelController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.entity.Hospital;
-import model.entity.drone.Drone;
 import util.StopWatch;
 import util.Wrapper;
+import view.CellView;
 import view.SelectableView;
+import view.boat.BoatView;
 import view.drone.DroneView;
-import view.hospital.HospitalView;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -40,25 +41,14 @@ public class MainController extends Application {
 
     @FXML
     private
-    TextField initialBatteryTextView, consumptionPerBlockTextView, consumptionPerSecondTextView, currentDroneTextField;
-
-    @FXML
-    private
-    Label initialBatteryLabel, consumptionPerBlockLabel, consumptionPerSecondLabel/*, badConectionLabel*/,
-            currentDroneLabel, sourceLabel, targetLabel, wrapperLabel;
-
-    @FXML
-    private
     ToggleButton startToggleButton, restartToggleButton;
 
     @FXML
     private
     ToggleButton riverToggleButton, hospitalToggleButton, droneToggleButton, antennaToggleButton, boatToggleButton;
 
-    /*@FXML
-    private
-    RadioButton trueBadConnectionRadioButton*//*, randomBadConnectionRadioButton*//*, noBadConnectionRadioButton;
-     */
+    @FXML
+    AnchorPane defaultPanelSettingsAnchorPane;
 
     @FXML
     private
@@ -74,11 +64,7 @@ public class MainController extends Application {
 
     @FXML
     private
-    Button saveButton, deleteButton, cleanButton;
-
-    @FXML
-    private
-    ComboBox<String> sourceComboBox, targetComboBox, wrapperComboBox;
+    Button deleteButton, cleanButton;
 
 
     private boolean running = false;
@@ -88,19 +74,20 @@ public class MainController extends Application {
     private EnvironmentController environmentController;
     private static MainController instance;
     private List<Wrapper> wrappersList = new ArrayList<>(Arrays.asList(Wrapper.values()));
-
+    private boolean saved = true;
+    private MenuController menuControler;
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/view/res/MainPanes.fxml"));
+        loader.setLocation(getClass().getResource("/view/res/main_panes.fxml"));
         loader.setController(this);
         AnchorPane rootAnchorPane = loader.load();
         primaryStage.setTitle("Dragonfly Simulator");
 
-        MenuController menuControler = new MenuController(rootAnchorPane, primaryStage);
+        menuControler = new MenuController(rootAnchorPane, primaryStage);
 
         Scene scene = new Scene(rootAnchorPane, 903, 705);
 
@@ -158,34 +145,20 @@ public class MainController extends Application {
 
         droneToggleButton.setOnMouseClicked(event -> droneToggleButtonIsSelected = !droneToggleButtonIsSelected);
 
-        saveButton.setOnAction(event -> {
-            SelectableView selectableView = EnvironmentController.getInstance().getSelectedEntityView();
 
-            if(selectableView instanceof DroneView){
-
-                DroneView droneView = (DroneView) selectableView;
-                Drone drone = DroneController.getInstance().getDroneFrom(droneView.getUniqueID());
-
-                startToggleButton.setDisable(false);
-                restartToggleButton.setDisable(false);
-
-                saveAttributesDrone(drone);
-
-                disableDroneSettingsViews();
-
-                droneToggleButton.setSelected(false);
-
-                environmentController.getEnvironmentView().getGridpane().requestFocus();
-            }
-
-
-
-
-        });
 
 
 
         startToggleButton.setOnAction(event -> {
+
+            if(!saved){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You must save new settings", ButtonType.OK);
+                alert.showAndWait();
+
+                startToggleButton.setSelected(false);
+
+                return;
+            }
 
 
             if(automaticExecutionCheckBox.isSelected()){
@@ -221,7 +194,7 @@ public class MainController extends Application {
 
         restartToggleButton.setOnAction(event -> {
 
-            quantidadeDeExecucoes[0]++;
+           /* quantidadeDeExecucoes[0]++;*/
 
             environmentController.consumeReset();
 
@@ -233,16 +206,7 @@ public class MainController extends Application {
 
             enableEnvironmentSettingViews();
 
-
-
-
         });
-
-
-    /*    environmentController.getEnvironmentView().getGridpane().setOnMouseClicked(event1 -> {
-
-
-        });*/
 
 
 
@@ -364,11 +328,22 @@ public class MainController extends Application {
 //
 //        });
 
+        toggleGroup1.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
 
+            if(newValue != null && newValue.isSelected()){
+                if(!saved){
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You must save new settings", ButtonType.OK);
+                    alert.showAndWait();
+
+                    toggleGroup1.getSelectedToggle().setSelected(false);
+                }
+            }
+
+        });
 
     }
 
-    boolean[] deveEntrar = {true};
+/*    boolean[] deveEntrar = {true};
     final int[] quantidadeDeExecucoes = {1};
     private void salvarLogsParaExperimento() {
         //todo isso foi criado  para o experimento
@@ -419,7 +394,7 @@ public class MainController extends Application {
             };
 
         }
-    }
+    }*/
 
 
     private boolean mustCreateEntitiesView() {
@@ -427,28 +402,42 @@ public class MainController extends Application {
                 || droneToggleButton.isSelected() || boatToggleButton.isSelected();
     }
 
-    private void createEntitiesView(SelectableView selectedSelectableView) {
+    private void createEntitiesView(CellView selectedCellView) {
         try {
 
         if (riverToggleButton.isSelected()) {
             //todo posso fazer o tratamento p não se sobrepor o mesmo objeto
-            environmentController.createRiver(selectedSelectableView);
+            environmentController.createRiver(selectedCellView);
 
         } else if (hospitalToggleButton.isSelected()) {
             //todo posso fazer o tratamento p não se sobrepor o mesmo objeto
-            environmentController.createHospital(selectedSelectableView);
+            environmentController.createHospital(selectedCellView);
 
         } else if (antennaToggleButton.isSelected()) {
             //todo posso fazer o tratamento p não se sobrepor o mesmo objeto
-            environmentController.createAntenna(selectedSelectableView);
+            environmentController.createAntenna(selectedCellView);
         } else if (droneToggleButton.isSelected()) {
 
-                Drone drone = environmentController.createDrone(selectedSelectableView);
-                enableDroneSettingsViews();
+            //add drone settings_panel
+            environmentController.createDrone(selectedCellView);
+            DroneSettingsPanelController.getInstance().show();
+            BoatSettingsPanelController.getInstance().hide();
 
-                updateDroneSettingsViews(drone);
+            saved = false;
+
+            droneToggleButton.setSelected(false);
+
+
+
         }else if(boatToggleButton.isSelected()){
-            environmentController.createBoat(selectedSelectableView);
+            environmentController.createBoat(selectedCellView);
+
+            saved = false;
+            DroneSettingsPanelController.getInstance().hide();
+            BoatSettingsPanelController.getInstance().show();
+
+
+            boatToggleButton.setSelected(false);
         }
 
             }catch (Exception e){
@@ -461,76 +450,6 @@ public class MainController extends Application {
 
 
     }
-
-
-
-    private void updateDroneSettingsViews(Drone selectedDrone) {
-
-           String droneLabel = selectedDrone.getLabel();
-
-            Double batteryPerBlock = selectedDrone.getBatteryPerBlock();
-            Double batteryPerSecond = selectedDrone.getBatteryPerSecond();
-            Double initialBattery = selectedDrone.getInitialBattery();
-
-            Boolean isAutomatic = selectedDrone.isAutomatic();
-            Boolean isWrapper = selectedDrone.isWrapper();
-
-            currentDroneTextField.setText(droneLabel);
-            consumptionPerBlockTextView.setText(String.valueOf(batteryPerBlock));
-            consumptionPerSecondTextView.setText(String.valueOf(batteryPerSecond));
-            initialBatteryTextView.setText(String.valueOf(initialBattery));
-
-            //automaticExecutionCheckBox.setSelected(isAutomatic);
-
-           /* wrapperCheckBox.setSelected(isWrapper);*/
-
-            List<String> nameWrappers = new ArrayList<>();
-            for(Wrapper wrapper : wrappersList){
-                nameWrappers.add(wrapper.name());
-            }
-
-            ObservableList<String> options1 =
-                    FXCollections.observableArrayList(nameWrappers);
-            wrapperComboBox.setItems(options1);
-
-            Wrapper currentWrapper = selectedDrone.getWrapper();
-
-            wrapperComboBox.getSelectionModel().select(currentWrapper.name());
-            List<HospitalView> hospitalViewList = new ArrayList<>(HospitalController.getInstance().getHospitalViewMap().values());
-
-            List<String> nameHospitals = new ArrayList<>(hospitalViewList.size());
-            for(HospitalView hospitalView : hospitalViewList){
-                nameHospitals.add(hospitalView.getHospitalLabel());
-            }
-
-            ObservableList<String> options2 =
-                    FXCollections.observableArrayList(nameHospitals);
-            sourceComboBox.setItems(options2);
-
-
-            targetComboBox.setItems(options2);
-            Hospital sourceHopital = selectedDrone.getSourceHospital();
-            Hospital destinyHopital = selectedDrone.getDestinyHopistal();
-
-            String labelSourceHospitalView = sourceHopital.getLabel();
-            String labelDestinyHospitalView = destinyHopital.getLabel();
-
-            sourceComboBox.getSelectionModel().select(labelSourceHospitalView);
-
-            targetComboBox.getSelectionModel().select(labelDestinyHospitalView);
-
-
-
-
-        }
-
-
-
-
-/*    private void updateSelectedDrone(DroneViewImpl droneView) {
-        droneViewSelected = droneView;
-        droneView.applyStyleSelected();
-    }*/
 
 
     private void disableEnvironmentSettingViews() {
@@ -556,103 +475,6 @@ public class MainController extends Application {
         automaticExecutionCheckBox.setDisable(false);
     }
 
-    private void disableDroneSettingsViews() {
-
-        consumptionPerBlockLabel.setDisable(true);
-        consumptionPerBlockTextView.setDisable(true);
-
-        consumptionPerSecondLabel.setDisable(true);
-        consumptionPerSecondTextView.setDisable(true);
-
-        initialBatteryLabel.setDisable(true);
-        initialBatteryTextView.setDisable(true);
-        wrapperLabel.setDisable(true);
-        wrapperComboBox.setDisable(true);
-        saveButton.setDisable(true);
-        sourceComboBox.setDisable(true);
-        sourceLabel.setDisable(true);
-        targetComboBox.setDisable(true);
-        targetLabel.setDisable(true);
-
-        //automaticExecutionCheckBox.setDisable(true);
-      /*  wrapperCheckBox.setDisable(true);*/
-
-    }
-
-    private void enableDroneSettingsViews() {
-
-
-        if (!running) {
-            consumptionPerBlockLabel.setDisable(false);
-            consumptionPerBlockTextView.setDisable(false);
-            consumptionPerBlockTextView.requestFocus();
-
-            consumptionPerSecondLabel.setDisable(false);
-            consumptionPerSecondTextView.setDisable(false);
-
-            initialBatteryLabel.setDisable(false);
-            initialBatteryTextView.setDisable(false);
-
-            sourceComboBox.setDisable(false);
-            sourceLabel.setDisable(false);
-            targetLabel.setDisable(false);
-            targetComboBox.setDisable(false);
-            //automaticExecutionCheckBox.setDisable(false);
-           /* wrapperCheckBox.setDisable(false);*/
-            wrapperLabel.setDisable(false);
-            wrapperComboBox.setDisable(false);
-            saveButton.setDisable(false);
-        }
-
-
-
-    }
-
-
-
-    public void saveAttributesDrone(Drone selectedDrone) {
-
-        if (!running) {
-            selectedDrone.setInitialBattery(Double.parseDouble(initialBatteryTextView.getText()));
-
-            selectedDrone.setCurrentBattery(Double.parseDouble(initialBatteryTextView.getText()));
-
-            selectedDrone.setBatteryPerBlock(Double.parseDouble(consumptionPerBlockTextView.getText()));
-            selectedDrone.setBatteryPerSecond(Double.parseDouble(consumptionPerSecondTextView.getText()));
-
-           /* selectedDrone.setAspect(wrapperCheckBox.isSelected());*/
-            selectedDrone.setWrapper(wrappersList.get(wrapperComboBox.getSelectionModel().getSelectedIndex()));
-            List<Hospital> hospitalList  = new ArrayList<>(HospitalController.getInstance().getHospitalMap().values());
-
-            selectedDrone.setSourceHospital(hospitalList.get(sourceComboBox.getSelectionModel().getSelectedIndex()));
-            selectedDrone.setDestinyHopistal(hospitalList.get(targetComboBox.getSelectionModel().getSelectedIndex()));
-
-        }
-
-
-        if (!randomStrongWindRadioButton.isSelected()) {
-            selectedDrone.setStrongWind(trueStrongWindRadioButton.isSelected());
-        }
-
-
-       /* selectedDrone.setIsAutomatic(automaticExecutionCheckBox.isSelected());
-        selectedDrone.setIsManual(!selectedDrone.isAutomatic());*/
-
-        /* selectedDrone.setBadConnection(trueBadConnectionRadioButton.isSelected());*/
-
-
-      /*  if (running) {
-
-                if (selectedDrone.isBadConnection()) {
-                    environmentController.consumeBadConnection(selectedDrone);
-                } else {
-                    environmentController.consumeNormalConnection(selectedDrone);
-                }
-
-
-
-        }*/
-    }
 
     private void initializeControllers() {
         this.instance = this;
@@ -664,6 +486,12 @@ public class MainController extends Application {
 
         loggerController = LoggerController.getInstance();
 
+        DroneSettingsPanelController.init(defaultPanelSettingsAnchorPane);
+
+
+        BoatSettingsPanelController.init(defaultPanelSettingsAnchorPane);
+
+
 
 
     }
@@ -673,112 +501,47 @@ public class MainController extends Application {
     }
 
 
-    public void notifyMouseClick(SelectableView selectedSelectableView) {
+    public void notifyMouseClick(CellView selectedCellView) {
         //Create elements
-        EnvironmentController.getInstance().consumeMouseClick(selectedSelectableView);
+        EnvironmentController.getInstance().consumeMouseClick(selectedCellView);
+
 
         if(mustCreateEntitiesView()){
-
-            createEntitiesView(selectedSelectableView);
+            createEntitiesView(selectedCellView);
 
         }else {
-                SelectableView selectableView = EnvironmentController.getInstance().getSelectedEntityView();
-            if(selectableView instanceof DroneView){
-                DroneView droneView = (DroneView) selectableView;
-                Drone drone = DroneController.getInstance().getDroneFrom(droneView.getUniqueID());
-                enableDroneSettingsViews();
-                updateDroneSettingsViews(drone);
-            }else {
-                disableDroneSettingsViews();
-                clearDroneSettingView();
-            }
-/*
-            //select elements
-            EnvironmentController.getInstance().consumeClickEvent();
 
-            updateDroneSettingsViews();
+            SelectableView currentSelectableView = getSelectableView(selectedCellView);
 
-            if(environmentController.getSelectedDrone() != null){
-                enableDroneSettingsViews();
-            }else {
-                disableDroneSettingsViews();
+            DroneSettingsPanelController.getInstance().notifyMouseClick(currentSelectableView);
+            BoatSettingsPanelController.getInstance().notifyMouseClick(currentSelectableView);
+            saved = false;
+
             }
 
 
-            SelectableView selectableView = environmentController.getSelectedEntityView();
-
-
-
-
-            if(selectableView != null){
-                selectedSelectableView = selectableView;
-                selectableView.applyStyleSelected();
-
-                if(selectableView instanceof DroneView){
-                    DroneView droneView = (DroneView) selectableView;
-                    droneViewSelected = droneView;
-
-                    updateSelectedDrone((DroneViewImpl) droneView);
-                    updateDroneSettingsViews();
-
-                    enableDroneSettingsViews();
-                }else {
-
-                    droneViewSelected = null;
-                    updateDroneSettingsViews();
-                    disableDroneSettingsViews();
-
-                }
-            }else {
-                selectedSelectableView = null;
-            }*/
 
         }
 
+    private SelectableView getSelectableView(CellView selectedCellView) {
 
+        if(EnvironmentController.getInstance().getSelectedEntityView()!= null){
+            return EnvironmentController.getInstance().getSelectedEntityView();
 
-
-
-    }
-
-    private void clearDroneSettingView() {
-            currentDroneTextField.setText("");
-            consumptionPerBlockTextView.setText("");
-            consumptionPerSecondTextView.setText("");
-            initialBatteryTextView.setText("");
-            //automaticExecutionCheckBox.setSelected(false);
-            wrapperComboBox.getSelectionModel().clearSelection();
-            /* wrapperCheckBox.setSelected(false);*/
-
-            sourceComboBox.getSelectionModel().clearSelection();
-            targetComboBox.getSelectionModel().clearSelection();
-
-            /* trueBadConnectionRadioButton.setSelected(false);*/
-
+        }else {
+            return selectedCellView;
+        }
     }
 
 
- /*          environmentController.getEnvironmentView().getGridpane().setOnKeyPressed(event -> {
 
+
+    public void notifyOnKeyPressed(KeyEvent event, CellView selectedCellView) {
         if (!running) {
             return;
         }
 
-        if (environmentController.getSelectedDrone() != null) {
-            environmentController.notifyKeyEvent(event.getCode());
-        }
-
-    });*/
-
-
-
-
-    public void notifyOnKeyPressed(KeyEvent event, SelectableView selectableView) {
-        if (!running) {
-            return;
-        }
-
-        EnvironmentController.getInstance().consumeOnKeyPressed(event, selectableView);
+        EnvironmentController.getInstance().consumeOnKeyPressed(event, selectedCellView);
     }
 
     public void notifyBadConnection(SelectableView selectableView) {
@@ -787,5 +550,18 @@ public class MainController extends Application {
 
     public void notifyNormalConnection(SelectableView selectableView) {
         EnvironmentController.getInstance().consumeNormalConnection(selectableView);
+    }
+
+    public void notitySaveFromPanelSettings() {
+        startToggleButton.setDisable(false);
+        restartToggleButton.setDisable(false);
+
+        droneToggleButton.setSelected(false);
+        boatToggleButton.setSelected(false);
+
+        saved =true;
+
+
+        environmentController.getEnvironmentView().getGridpane().requestFocus();
     }
 }

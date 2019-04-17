@@ -4,12 +4,12 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import model.Cell;
+import util.SelectHelper;
 import util.UniqueIDGenenator;
 import view.CellView;
 import view.SelectableView;
 import view.drone.DroneView;
-import view.res.EnvironmentView;
-import view.river.RiverView;
+import view.EnvironmentView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,7 +184,7 @@ public class CellController {
 
     public Cell getCellFrom(int rowPosition, int collunmPosition){
         for(Cell cell : cellMap.values()){
-            if(cell.getRowPosition() == rowPosition && cell.getCollunmPosition() == collunmPosition){
+            if(cell.getRowPosition() == rowPosition && cell.getColumnPosition() == collunmPosition){
                 return cell;
             }
         }
@@ -216,7 +216,7 @@ public class CellController {
 
     }
 
-    public void consumeOnKeyPressed(SelectableView selectedCellView, KeyEvent keyEvent) {
+    public void consumeOnKeyPressed(CellView selectedCellView, KeyEvent keyEvent) {
 
     }
 
@@ -240,14 +240,23 @@ public class CellController {
 
     }
 
-    public SelectableView getSelectedEntityView(SelectableView selectedCellView) {
-        System.out.println("selectedCellView "+selectedCellView);
-        System.out.println("getCurrentCellView "+selectedCellView.getCurrentCellView());
+    public SelectableView getSelectedEntityView(CellView selectedCellView) {
+
         if(selectedCellView.getCurrentCellView().getChildren().isEmpty()){
             return null;
         }
 
-        return (SelectableView) selectedCellView.getCurrentCellView().getChildren().get(selectedCellView.getCurrentCellView().getChildren().size()-1);
+        for(int i =selectedCellView.getCurrentCellView().getChildren().size()-1; i >= 0; i--){
+
+            if(selectedCellView.getCurrentCellView().getChildren().get(i) instanceof SelectableView){
+                if(!(selectedCellView.getCurrentCellView().getChildren().get(i) instanceof CellView)){
+                    return (SelectableView) selectedCellView.getCurrentCellView().getChildren().get(i);
+                }
+
+            }
+        }
+
+        return null;
     }
 
  /*   public SelectableView getTopperSelectableView(SelectableView selectedEntityView) {

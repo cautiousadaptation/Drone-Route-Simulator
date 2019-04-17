@@ -16,7 +16,7 @@ import util.UniqueIDGenenator;
 import view.CellView;
 import view.SelectableView;
 import view.drone.DroneView;
-import view.res.EnvironmentView;
+import view.EnvironmentView;
 import view.river.RiverView;
 
 import java.util.*;
@@ -24,7 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class EnvironmentController {
 
-    private SelectableView selectedCellView;
+    private CellView selectedCellView;
     private EnvironmentView environmentView;
     private Environment environment;
 
@@ -98,17 +98,17 @@ public class EnvironmentController {
         return instance;
     }
 
-    public void notifyMouseClick(CellView cellViewSelected) {
+    public void notifyMouseClick(CellView selectedCellView) {
 
         MainController mainController = MainController.getInstance();
-        mainController.notifyMouseClick(cellViewSelected);
+        mainController.notifyMouseClick(selectedCellView);
 
     }
 
-    public void consumeMouseClick(SelectableView cellViewSelected) {
+    public void consumeMouseClick(CellView cellViewSelected) {
 
         this.selectedCellView = cellViewSelected;
-        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedCellView);
+        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(cellViewSelected);
 
         clearSelectionOnAllSelectableView();
 
@@ -126,16 +126,16 @@ public class EnvironmentController {
 
     }
 
-    public void notifyOnKeyPressed(KeyEvent event, SelectableView selectableView) {
+    public void notifyOnKeyPressed(KeyEvent event, CellView selectedCellView) {
         this.keyEvent = event;
 
         MainController mainController = MainController.getInstance();
-        mainController.notifyOnKeyPressed(event, selectableView);
+        mainController.notifyOnKeyPressed(event, selectedCellView);
     }
 
 
-    public void consumeOnKeyPressed(KeyEvent event, SelectableView selectableView) {
-        this.selectedCellView = selectableView;
+    public void consumeOnKeyPressed(KeyEvent event, CellView selectedCellView) {
+        this.selectedCellView = selectedCellView;
         this.selectedEntityView = getSelectedEntityView();
         this.keyEvent = event;
 
@@ -259,45 +259,42 @@ public class EnvironmentController {
         AntennaController.getInstance().consumeNormalConnection(selectableView);
     }
 
+    public Drone createDrone(CellView selectedCellView) throws ClickOutsideRegionException {
+        String uniqueID = UniqueIDGenenator.generate();
 
-    public Drone createDrone(SelectableView selectedSelectableView) throws ClickOutsideRegionException, MinimumHospitalQuantityException {
+        return createDrone(uniqueID, selectedCellView);
+    }
+
+    public Drone createDrone(String uniqueID, CellView selectedCellView) throws ClickOutsideRegionException {
         clearSelectionOnAllSelectableView();
 
-        CellView selectedCellView = (CellView) selectedSelectableView;
-
         DroneController droneController = DroneController.getInstance();
-        HospitalController hospitalController = HospitalController.getInstance();
-
-        if (hospitalController.getHospitalMap().size() < 2) {
-            throw new MinimumHospitalQuantityException();
-        }
 
         if (selectedCellView == null) {
             throw new ClickOutsideRegionException();
         }
 
-
-        String uniqueID = UniqueIDGenenator.generate();
 
         String droneLabel = String.valueOf(Drone.COUNT_DRONE);
 
-        Iterator<Map.Entry<String, Hospital>> iterator = hospitalController.getHospitalMap().entrySet().iterator();
-        Map.Entry<String, Hospital> firstHospital = iterator.next();
-        Map.Entry<String, Hospital> secondHospital = iterator.next();
 
-        Drone drone = droneController.createDrone(uniqueID, droneLabel, firstHospital.getValue(), secondHospital.getValue(), selectedCellView);
+        Drone drone = droneController.createDrone(uniqueID, droneLabel, selectedCellView);
 
-        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedSelectableView);
+        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedCellView);
         return drone;
+    }
 
+
+    public Hospital createHospital(CellView selectedCellView) throws ClickOutsideRegionException {
+
+        String uniqueID = UniqueIDGenenator.generate();
+
+        return createHospital(uniqueID, selectedCellView);
 
     }
 
-    public Hospital createHospital(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
-
+    public Hospital createHospital( String uniqueID , CellView selectedCellView) throws ClickOutsideRegionException {
         clearSelectionOnAllSelectableView();
-
-        CellView selectedCellView = (CellView) selectedSelectableView;
 
         HospitalController hospitalController = HospitalController.getInstance();
 
@@ -307,23 +304,29 @@ public class EnvironmentController {
         }
 
 
-        String uniqueID = UniqueIDGenenator.generate();
+
 
         String hospitalLabel = String.valueOf(Hospital.COUNT_HOSPITAL);
 
-       Hospital hospital = hospitalController.createHospital(uniqueID, hospitalLabel, selectedCellView);
+        Hospital hospital = hospitalController.createHospital(uniqueID, hospitalLabel, selectedCellView);
 
-        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedSelectableView);
+        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedCellView);
 
         return hospital;
 
+
     }
 
-    public River createRiver(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
 
+    public River createRiver(CellView selectedCellView) throws ClickOutsideRegionException {
+
+        String uniqueID = UniqueIDGenenator.generate();
+        return createRiver(uniqueID, selectedCellView);
+
+    }
+
+    public River createRiver(String uniqueID, CellView selectedCellView) throws ClickOutsideRegionException {
         clearSelectionOnAllSelectableView();
-
-        CellView selectedCellView = (CellView) selectedSelectableView;
 
         RiverController riverController = RiverController.getInstance();
 
@@ -332,21 +335,24 @@ public class EnvironmentController {
             throw new ClickOutsideRegionException();
         }
 
-        String uniqueID = UniqueIDGenenator.generate();
 
         River river = riverController.createRiver(uniqueID, selectedCellView);
 
-        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedSelectableView);
+        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedCellView);
 
         return  river;
-
     }
 
-    public Antenna createAntenna(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
+    public Antenna createAntenna(CellView selectedCellView) throws ClickOutsideRegionException {
+        String uniqueID = UniqueIDGenenator.generate();
+
+        return createAntenna(uniqueID, selectedCellView);
+    }
+
+    public Antenna createAntenna( String uniqueID, CellView selectedCellView) throws ClickOutsideRegionException {
 
         clearSelectionOnAllSelectableView();
 
-        CellView selectedCellView = (CellView) selectedSelectableView;
         AntennaController antennaController = AntennaController.getInstance();
 
 
@@ -355,8 +361,6 @@ public class EnvironmentController {
         }
 
 
-        String uniqueID = UniqueIDGenenator.generate();
-
         String antennaLabel = String.valueOf(Antenna.COUNT_ANTENNA);
 
         Antenna antenna = antennaController.createAntenna(uniqueID, antennaLabel, selectedCellView);
@@ -364,9 +368,15 @@ public class EnvironmentController {
 
     }
 
-    public Boat createBoat(SelectableView selectedSelectableView) throws ClickOutsideRegionException {
+    public Boat createBoat(CellView selectedCellView) throws ClickOutsideRegionException {
+        String uniqueID = UniqueIDGenenator.generate();
 
-       RiverView riverView = RiverController.getInstance().getRiverViewFrom(selectedSelectableView);
+        return createBoat(uniqueID, selectedCellView);
+    }
+
+    public Boat createBoat(String uniqueID, CellView selectedCellView) throws ClickOutsideRegionException {
+
+       RiverView riverView = RiverController.getInstance().getRiverViewFrom(selectedCellView);
 
        if(riverView == null){
            throw new ClickOutsideRegionException("You must put the BoatView on top of a RiverView. ");
@@ -374,7 +384,6 @@ public class EnvironmentController {
 
         clearSelectionOnAllSelectableView();
 
-        CellView selectedCellView = (CellView) selectedSelectableView;
         BoatController boatController = BoatController.getInstance();
 
 
@@ -383,11 +392,13 @@ public class EnvironmentController {
         }
 
 
-        String uniqueID = UniqueIDGenenator.generate();
+
 
         String boatLabel = String.valueOf(Boat.COUNT_BOAT);
 
         Boat boat = boatController.createBoat(uniqueID, boatLabel, selectedCellView);
+
+        this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedCellView);
         return boat;
 
     }
@@ -477,7 +488,7 @@ public class EnvironmentController {
         return selectedCellView;
     }
 
-    public void setSelectedCellView(SelectableView selectedCellView) {
+    public void setSelectedCellView(CellView selectedCellView) {
         this.selectedCellView = selectedCellView;
     }
 
