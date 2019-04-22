@@ -653,18 +653,18 @@ public class DroneBusinessObject {
                 Platform.runLater(() -> {
                     System.out.println("Return to Home inicio" + Thread.currentThread().getName());
                     String mustGO = null;
-                    CellView hopitalCellView = null;
+                    CellView cellView = null;
 
                     CellView droneCellView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID()).getCurrentCellView();
                     if(drone.isReturningToHome()){
-                        //go to source hospital (return to home)
-                        hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getSourceCell().getUniqueID()).getCurrentCellView();
+                        //go to source  (return to home)
+                        cellView = CellController.getInstance().getCellViewFrom(drone.getSourceCell());
                     }else {
-                        //go to destiny hospital (to go destiny)
-                        hopitalCellView = HospitalController.getInstance().getHospitalViewFrom(drone.getDestinyCell().getUniqueID()).getCurrentCellView();
+                        //go to destiny  (to go destiny)
+                        cellView = CellController.getInstance().getCellViewFrom(drone.getDestinyCell());
                     }
 
-                    mustGO = closeDirection(droneCellView, hopitalCellView);
+                    mustGO = closeDirection(droneCellView, cellView);
 
                     DroneBusinessObject.getInstance().goTo(drone, mustGO);
                     checkStatus(drone);

@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Drone-Route-Simulator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Drone_Route_Simulator_jar</output-path>
+    <root id="archive" name="Drone-Route-Simulator.jar">
+      <element id="module-output" name="Drone-Route-Simulator" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Dragonfly/aspectj-1.9.2/lib/aspectjrt.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -150,7 +150,7 @@ public aspect Wrapper7 {
     void around(): returnToHome()
             &&
             if
-                    (
+             (
             (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() < ((Drone)thisJoinPoint.getArgs()[0]).getDistanceSource())
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).getCurrentBattery() > 10)
