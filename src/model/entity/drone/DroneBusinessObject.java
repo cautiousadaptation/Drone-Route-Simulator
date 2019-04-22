@@ -193,7 +193,7 @@ public class DroneBusinessObject {
 
         KeyCode flyDirectionCommand = selectedDrone.getFlyDirectionCommand();
 
-        if (selectedDrone.getCurrentBattery() > 10 && selectedDrone.getDistanceHospitalDestiny() > 0 && flyDirectionCommand != null
+        if (selectedDrone.getCurrentBattery() > 10 && selectedDrone.getDistanceDestiny() > 0 && flyDirectionCommand != null
                 && !selectedDrone.isReturningToHome()
                 && !selectedDrone.isSafeLand()
                 && !selectedDrone.isBadConnection()
@@ -217,7 +217,7 @@ public class DroneBusinessObject {
         }
 
         if (selectedDrone.isBadConnection() && selectedDrone.isReturningToHome()
-                && selectedDrone.getDistanceHospitalSource() == 0) {
+                && selectedDrone.getDistanceSource() == 0) {
 
             // stopReturnToHome();
             //returnToHomeStopWatch.stop();
@@ -257,7 +257,7 @@ public class DroneBusinessObject {
            // applyEconomyMode(selectedDrone);
         }
 
-        if (selectedDrone.getCurrentBattery() <= 10 && selectedDrone.getDistanceHospitalDestiny() > 0
+        if (selectedDrone.getCurrentBattery() <= 10 && selectedDrone.getDistanceDestiny() > 0
                 && !selectedDrone.isSafeLand()) {
 
             //SafeLanding
@@ -297,7 +297,7 @@ public class DroneBusinessObject {
 
         }
 
-        if (selectedDrone.getDistanceHospitalDestiny() == 0) {
+        if (selectedDrone.getDistanceDestiny() == 0) {
             //arrived at destination
             boolean landingExecuted = landing(selectedDrone);
             if(landingExecuted){
@@ -424,22 +424,22 @@ public class DroneBusinessObject {
 
 
     public static void updateDistances(Drone selectedDrone) {
-        updateDistanceHospitalSource(selectedDrone);
-        updateDistanceHospitalDestiny(selectedDrone);
+        updateDistanceSource(selectedDrone);
+        updateDistanceDestiny(selectedDrone);
     }
 
-    static synchronized public void updateDistanceHospitalDestiny(Drone selectedDrone) {
+    static synchronized public void updateDistanceDestiny(Drone selectedDrone) {
         double distanceHospitalDestiny = calculeteDistanceFrom(selectedDrone, selectedDrone.getDestinyCell());
         // System.out.println("distanceHospitalDestiny"+ distanceHospitalDestiny);
 
 
-        selectedDrone.setDistanceHospitalDestiny(distanceHospitalDestiny);
+        selectedDrone.setDistanceDestiny(distanceHospitalDestiny);
     }
 
-    static synchronized public void updateDistanceHospitalSource(Drone selectedDrone) {
+    static synchronized public void updateDistanceSource(Drone selectedDrone) {
         double distanceHospitalSource = calculeteDistanceFrom(selectedDrone, selectedDrone.getSourceCell());
         // System.out.println("distanceHospitalSource"+ distanceHospitalSource);
-        selectedDrone.setDistanceHospitalSource(distanceHospitalSource);
+        selectedDrone.setDistanceSource(distanceHospitalSource);
     }
 
     public static double calculeteDistanceFrom(Drone selectedDrone, Cell cell) {
@@ -1038,8 +1038,8 @@ public class DroneBusinessObject {
         currentDrone.setIsTookOff(false);
         currentDrone.setStarted(false);
         currentDrone.setLanding(false);
-        currentDrone.setDistanceHospitalSource(calculeteDistanceFrom(currentDrone, currentDrone.getSourceCell()));
-        currentDrone.setDistanceHospitalDestiny(calculeteDistanceFrom(currentDrone, currentDrone.getDestinyCell()));
+        currentDrone.setDistanceSource(calculeteDistanceFrom(currentDrone, currentDrone.getSourceCell()));
+        currentDrone.setDistanceDestiny(calculeteDistanceFrom(currentDrone, currentDrone.getDestinyCell()));
         mustStopReturnToHomeStopWatch = true;
         /*if (returnToHomeStopWatch != null) {
             returnToHomeStopWatch.stop();
@@ -1054,14 +1054,14 @@ public class DroneBusinessObject {
 
     static public void checkAndPrintIfLostDrone(Drone drone) {
 
-        // System.out.println(ANSI_RED + "drone.getDistanceHospitalDestiny():"+ drone.getDistanceHospitalDestiny() + ANSI_RESET );
+        // System.out.println(ANSI_RED + "drone.getDistanceDestiny():"+ drone.getDistanceDestiny() + ANSI_RESET );
 
-        if (drone.isReturningToHome() && drone.getDistanceHospitalSource() == 0) {
+        if (drone.isReturningToHome() && drone.getDistanceSource() == 0) {
             System.out.println("Drone[" + drone.getLabel() + "] " + "Return to home completed successfully");
             LoggerController.getInstance().print("Drone[" + drone.getLabel() + "] " + "Return to home completed successfully");
             return;
         }
-        if (drone.getDistanceHospitalDestiny() == 0) {
+        if (drone.getDistanceDestiny() == 0) {
             System.out.println("Drone[" + drone.getLabel() + "] " + "Arrived at destination");
             LoggerController.getInstance().print("Drone[" + drone.getLabel() + "]" + "Arrived at destination");
             return;

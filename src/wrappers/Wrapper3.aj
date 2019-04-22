@@ -24,7 +24,7 @@ public aspect Wrapper3 {
 
             &&
 
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() > 60)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() > 60)
 
             &&
 
@@ -38,7 +38,7 @@ public aspect Wrapper3 {
     boolean around(): safeLanding()
             && if
             (
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() <=60)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() <=60)
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).isStrongWind())
             &&
@@ -53,7 +53,7 @@ public aspect Wrapper3 {
     void around(): returnToHome()
             && if
             (
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() < ((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalSource())
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() < ((Drone)thisJoinPoint.getArgs()[0]).getDistanceSource())
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).getCurrentBattery() > 10)
             &&

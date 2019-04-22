@@ -8,9 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import model.Cell;
 import model.entity.boat.Boat;
+import model.entity.boat.BoatBusinessObject;
 import view.CellView;
 import view.SelectableView;
 import view.boat.BoatView;
+import view.river.RiverView;
 
 
 import java.io.IOException;
@@ -33,7 +35,7 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
     Label currentSourceCell, currentDestinyCell, sourceLabel, targetLabel;
 
     @FXML
-    ImageView sourceSettingsImageView, destinySettingsImageView;
+    ImageView /*sourceSettingsImageView,*/ destinySettingsImageView;
     private boolean clickedSourceSettings;
     private boolean clickedDestinySettings;
     private boolean waitForClickInCell =false;
@@ -83,7 +85,7 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
 
         });
 
-        sourceSettingsImageView.setOnMouseClicked(event -> {
+  /*      sourceSettingsImageView.setOnMouseClicked(event -> {
 
             clickedSourceSettings = true;
             clickedDestinySettings = false;
@@ -94,12 +96,12 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
             alert.showAndWait();
 
 
-        });
+        });*/
 
         destinySettingsImageView.setOnMouseClicked(event -> {
 
-            clickedSourceSettings = false;
-            clickedDestinySettings = true;
+//            clickedSourceSettings = false;
+//            clickedDestinySettings = true;
 
             waitForClickInCell =true;
 
@@ -113,8 +115,8 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
     @Override
     void disableSettingsViews() {
         saveButton.setDisable(true);
-        sourceSettingsImageView.setDisable(true);
-        sourceSettingsImageView.setOpacity(0.3);
+//        sourceSettingsImageView.setDisable(true);
+//        sourceSettingsImageView.setOpacity(0.3);
 
         destinySettingsImageView.setDisable(true);
         destinySettingsImageView.setOpacity(0.3);
@@ -127,8 +129,8 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
         sourceLabel.setDisable(false);
         targetLabel.setDisable(false);
 
-        sourceSettingsImageView.setDisable(false);
-        sourceSettingsImageView.setOpacity(1);
+//        sourceSettingsImageView.setDisable(false);
+//        sourceSettingsImageView.setOpacity(1);
 
         destinySettingsImageView.setDisable(false);
         destinySettingsImageView.setOpacity(1);
@@ -137,16 +139,18 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
 
     @Override
     void saveAttributesInEntity(Boat boat) {
-        int srcI = Integer.parseInt(currentSourceCell.getText().split(",")[0].replace("<",""));
-        int srcJ = Integer.parseInt(currentSourceCell.getText().split(",")[1].replace(">",""));
+//        int srcI = Integer.parseInt(currentSourceCell.getText().split(",")[0].replace("<",""));
+//        int srcJ = Integer.parseInt(currentSourceCell.getText().split(",")[1].replace(">",""));
 
         int destI = Integer.parseInt(currentDestinyCell.getText().split(",")[0].replace("<",""));
         int destJ = Integer.parseInt(currentDestinyCell.getText().split(",")[1].replace(">",""));
 
 
-        boat.setSourceCell(CellController.getInstance().getCellFrom(srcI, srcJ));
+//        boat.setSourceCell(CellController.getInstance().getCellFrom(srcI, srcJ));
 
         boat.setDestinyCell(CellController.getInstance().getCellFrom(destI, destJ));
+
+        BoatBusinessObject.updateDistances(boat);
     }
 
     @Override
@@ -179,27 +183,29 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
     @Override
     public void notifyMouseClick(SelectableView selectableView) {
         if(waitForClickInCell){
-            if (selectableView instanceof CellView) {
+            if (selectableView instanceof RiverView) {
 
-                CellView cellview = (CellView) selectableView;
-                Cell cell = CellController.getInstance().getCellFrom(cellview.getUniqueID());
+                RiverView riverView = (RiverView) selectableView;
+                Cell cell = CellController.getInstance().getCellFrom(riverView.getCurrentCellView().getUniqueID());
 
-                if (clickedSourceSettings) {
-                    currentSourceCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
-                    clickedSourceSettings = false;
-                }
+//                if (clickedSourceSettings) {
+//                    currentSourceCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
+//                    clickedSourceSettings = false;
+//                }
+//
+//                if (clickedDestinySettings) {
+//                    currentDestinyCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
+//                    clickedDestinySettings = false;
+//                }
 
-                if (clickedDestinySettings) {
-                    currentDestinyCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
-                    clickedDestinySettings = false;
-                }
+                currentDestinyCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
 
                 waitForClickInCell = false;
             }
         }else {
             if (selectableView instanceof BoatView) {
                 BoatView boatView = (BoatView) selectableView;
-                Boat boat = BoatController.getInstance().getBoatFrom(boatView.getUniqueID());
+                Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
 
                 show();
 
@@ -234,7 +240,7 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
 
         SelectableView selectableView = EnvironmentController.getInstance().getSelectedEntityView();
         BoatView boatView = (BoatView) selectableView;
-        selectedBoat = BoatController.getInstance().getBoatFrom(boatView.getUniqueID());
+        selectedBoat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
 
         updateSettingsViewsFromEntity(selectedBoat);
     }

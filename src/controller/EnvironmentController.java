@@ -11,7 +11,6 @@ import model.entity.River;
 import model.entity.boat.Boat;
 import model.entity.drone.Drone;
 import util.exceptions.ClickOutsideRegionException;
-import util.exceptions.MinimumHospitalQuantityException;
 import util.UniqueIDGenenator;
 import view.CellView;
 import view.SelectableView;
@@ -117,7 +116,7 @@ public class EnvironmentController {
             AntennaController.getInstance().consumeClickEvent(selectedEntityView);
             HospitalController.getInstance().consumeClickEvent(selectedEntityView);
             DroneController.getInstance().consumeClickEvent(selectedEntityView);
-            BoatController.getInstance().consumeClickEvent(selectedEntityView);
+            BoatAutomaticController.getInstance().consumeClickEvent(selectedEntityView);
         }else {
             CellController.getInstance().consumeClickEvent(selectedCellView);
         }
@@ -144,7 +143,7 @@ public class EnvironmentController {
             AntennaController.getInstance().consumeOnKeyPressed(selectedEntityView, keyEvent);
             HospitalController.getInstance().consumeOnKeyPressed(selectedEntityView, keyEvent);
             DroneController.getInstance().consumeOnKeyPressed(selectedEntityView, keyEvent);
-            BoatController.getInstance().consumeOnKeyPressed(selectedEntityView,keyEvent);
+            BoatAutomaticController.getInstance().consumeOnKeyPressed(selectedEntityView,keyEvent);
         } else {
             CellController.getInstance().consumeOnKeyPressed(selectedCellView, keyEvent);
         }
@@ -207,7 +206,7 @@ public class EnvironmentController {
         DroneController.getInstance().consumeCleanEnvironment();
         HospitalController.getInstance().consumeCleanEnvironment();
         AntennaController.getInstance().consumeClearEnvironment();
-        BoatController.getInstance().consumeCleanEnvironment();
+        BoatAutomaticController.getInstance().consumeCleanEnvironment();
         RiverController.getInstance().consumeClearEnvirironment();
 
     }
@@ -217,7 +216,7 @@ public class EnvironmentController {
         AntennaController.getInstance().consumeRunEnviroment();
         HospitalController.getInstance().consumeRunEnviroment();
         DroneController.getInstance().consumeRunEnviroment();
-        BoatController.getInstance().consumeRunEnviroment();
+        BoatAutomaticController.getInstance().consumeRunEnviroment();
         CellController.getInstance().consumeRunEnviroment();
     }
 
@@ -233,7 +232,7 @@ public class EnvironmentController {
         HospitalController.getInstance().consumeReset();
         DroneController.getInstance().consumeReset();
         CellController.getInstance().consumeReset();
-        BoatController.getInstance().consumeReset();
+        BoatAutomaticController.getInstance().consumeReset();
 
 
     }
@@ -384,7 +383,7 @@ public class EnvironmentController {
 
         clearSelectionOnAllSelectableView();
 
-        BoatController boatController = BoatController.getInstance();
+        BoatAutomaticController boatAutomaticController = BoatAutomaticController.getInstance();
 
 
         if (selectedCellView == null) {
@@ -396,7 +395,7 @@ public class EnvironmentController {
 
         String boatLabel = String.valueOf(Boat.COUNT_BOAT);
 
-        Boat boat = boatController.createBoat(uniqueID, boatLabel, selectedCellView);
+        Boat boat = boatAutomaticController.createBoat(uniqueID, boatLabel, selectedCellView);
 
         this.selectedEntityView = CellController.getInstance().getSelectedEntityView(selectedCellView);
         return boat;
@@ -420,7 +419,7 @@ public class EnvironmentController {
         RiverController.getInstance().cleanSelections();
         HospitalController.getInstance().cleanSelections();
         CellController.getInstance().cleanSelections();
-        BoatController.getInstance().cleanSelections();
+        BoatAutomaticController.getInstance().cleanSelections();
     }
 
     public CellView getCloserLand(Drone drone){

@@ -19,13 +19,19 @@ public class Boat extends Entity {
 
     private Cell sourceCell = CellController.getInstance().getCellFrom(0,0);
     private Cell destinyCell = CellController.getInstance().getCellFrom(0,0);
+    private Double distanceDestiny;
+    private Double distanceSource;
+    private boolean returnToHome = false;
+    private boolean stocked = false;
 
-    public Boat(String uniqueID, String label, int initialRowPosition, int initialCollunmPosition) {
+
+    public Boat(String uniqueID, String label, Cell sourceCell) {
         this.uniqueID = uniqueID;
-        this.initialRowPosition = initialRowPosition;
-        this.initialCollunmPosition = initialCollunmPosition;
-        this.currentRowPosition = initialRowPosition;
-        this.currentCollunmPosition = initialCollunmPosition;
+        this.initialRowPosition = sourceCell.getRowPosition();
+        this.initialCollunmPosition = sourceCell.getColumnPosition();
+        this.currentRowPosition = sourceCell.getRowPosition();
+        this.currentCollunmPosition = sourceCell.getColumnPosition();
+        this.sourceCell = sourceCell;
         this.label = label;
 
         COUNT_BOAT++;
@@ -33,6 +39,35 @@ public class Boat extends Entity {
 
     public static void restartCount() {
         COUNT_BOAT =1;
+    }
+
+    public void setReturnToHome(boolean returnToHome) {
+        boolean oldValue = this.returnToHome;
+        boolean newValue = returnToHome;
+
+        if(oldValue == returnToHome){
+            return;
+        }
+        this.returnToHome = returnToHome;
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+    public boolean isReturnToHome() {
+        return returnToHome;
+    }
+
+    public void stocked(boolean stocked) {
+        boolean oldValue = this.stocked;
+        boolean newValue = stocked;
+
+        if(oldValue == newValue){
+            return;
+        }
+        this.stocked = stocked;
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+
     }
 
     public interface Listener {
@@ -52,7 +87,15 @@ public class Boat extends Entity {
     }
 
     public void setStarted(boolean started) {
+        boolean oldValue = this.started;
+        boolean newValue = started;
+
+        if(oldValue == newValue){
+            return;
+        }
         this.started = started;
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
 
     public boolean isShitDown() {
@@ -185,6 +228,41 @@ public class Boat extends Entity {
         }
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+
+
+    public Double getDistanceDestiny() {
+        return distanceDestiny;
+    }
+
+    public void setDistanceDestiny(Double distanceDestiny) {
+        Double oldValue = this.distanceDestiny;
+        Double newValue = distanceDestiny;
+        this.distanceDestiny = distanceDestiny;
+
+        if(oldValue == newValue){
+            return;
+        }
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+    public void setDistanceSource(Double distanceSource) {
+        Double oldValue = this.distanceSource;
+        Double newValue = distanceSource;
+
+        if(oldValue == newValue){
+            return;
+        }
+
+        this.distanceSource = distanceSource;
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+    public Double getDistanceSource() {
+        return distanceSource;
     }
 
     public List<Listener> getListeners() {

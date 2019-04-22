@@ -28,7 +28,7 @@ public aspect Wrapper1 {
 
             &&
 
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() > 60)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() > 60)
 
             &&
 
@@ -40,7 +40,7 @@ public aspect Wrapper1 {
 
     //60 representa 2 bloquinhos de distancia
    boolean around(): safeLanding() && if(
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() <=60)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() <=60)
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).isStrongWind())
             &&

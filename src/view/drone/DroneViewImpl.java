@@ -52,8 +52,8 @@ public class DroneViewImpl extends DroneView {
         double distanceHospitalDestiny = calculeteDistanceFrom(drone.getDestinyHopistal());
 
 
-        drone.setDistanceHospitalSource(distanceHospitalSource);
-        drone.setDistanceHospitalDestiny(distanceHospitalDestiny);*/
+        drone.setDistanceSource(distanceHospitalSource);
+        drone.setDistanceDestiny(distanceHospitalDestiny);*/
 
         Label label = new Label();
         label.setText(droneLabel);

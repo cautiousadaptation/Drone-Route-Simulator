@@ -225,9 +225,8 @@ public class DroneKeyBoardController extends DroneController {
     public Drone createDrone(String uniqueID, String droneLabel,
                              CellView currentCellView) {
 
-
-        Drone drone  = new Drone(uniqueID, droneLabel, currentCellView.getRowPosition(),
-                currentCellView.getCollunmPosition());
+        Cell currentCell = CellController.getInstance().getCellFrom(currentCellView.getUniqueID());
+        Drone drone  = new Drone(uniqueID, droneLabel, currentCell);
 
         droneMap.put(uniqueID, drone);
 

@@ -6,7 +6,6 @@ import controller.CellController;
 import javafx.scene.input.KeyCode;
 import model.Cell;
 import model.entity.Entity;
-import model.entity.Hospital;
 import util.Wrapper;
 import view.SelectableView;
 import view.river.RiverView;
@@ -24,7 +23,7 @@ public class Drone extends Entity {
 
     private String uniqueID;
     private Integer initialPosistionI, initialPositionJ;
-    private Double initialBattery = 12.D;
+    private Double initialBattery = 100.D;
     private Double batteryPerBlock = 1.D;
     private Double batteryPerSecond = 1.D;
 
@@ -45,8 +44,8 @@ public class Drone extends Entity {
 
     private Boolean isSafeland = false;
 
-    private Double distanceHospitalSource;
-    private Double distanceHospitalDestiny;
+    private Double distanceSource;
+    private Double distanceDestiny;
     private Boolean isStrongWind =false;
     private Boolean isAutomatic = false;
     private Boolean isManual = true;
@@ -70,12 +69,14 @@ public class Drone extends Entity {
     private String label = "";
 
 
-    public Drone(String uniqueID, String label, int initialPositionI, Integer initialPositionJ) {
+    public Drone(String uniqueID, String label, Cell sourceCell) {
         this.uniqueID = uniqueID;
-        this.currentPositionI = initialPositionI;
-        this.currentPositionJ = initialPositionJ;
-        this.initialPosistionI = initialPositionI;
-        this.initialPositionJ = initialPositionJ;
+        this.currentPositionI = sourceCell.getRowPosition();
+        this.currentPositionJ = sourceCell.getColumnPosition();
+
+        this.initialPosistionI = sourceCell.getRowPosition();
+        this.initialPositionJ = sourceCell.getColumnPosition();
+        this.sourceCell = sourceCell;
 
         this.label = label;
 
@@ -279,20 +280,37 @@ public class Drone extends Entity {
     }
 
 
-    public Double getDistanceHospitalDestiny() {
-        return distanceHospitalDestiny;
+    public Double getDistanceDestiny() {
+        return distanceDestiny;
     }
 
-    public void setDistanceHospitalDestiny(Double distanceHospitalDestiny) {
-        Double oldValue = this.distanceHospitalDestiny;
-        Double newValue = distanceHospitalDestiny;
-        this.distanceHospitalDestiny = distanceHospitalDestiny;
+    public void setDistanceDestiny(Double distanceDestiny) {
+        Double oldValue = this.distanceDestiny;
+        Double newValue = distanceDestiny;
+        this.distanceDestiny = distanceDestiny;
 
         if(oldValue == newValue){
             return;
         }
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+    public void setDistanceSource(Double distanceSource) {
+        Double oldValue = this.distanceSource;
+        Double newValue = distanceSource;
+
+        if(oldValue == newValue){
+            return;
+        }
+
+        this.distanceSource = distanceSource;
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
+    }
+
+    public Double getDistanceSource() {
+        return distanceSource;
     }
 
     public void setBatteryPerBlock(Double batteryPerBlock) {
@@ -321,22 +339,6 @@ public class Drone extends Entity {
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
 
-    public void setDistanceHospitalSource(Double distanceHospitalSource) {
-       Double oldValue = this.distanceHospitalSource;
-       Double newValue = distanceHospitalSource;
-
-        if(oldValue == newValue){
-            return;
-        }
-
-       this.distanceHospitalSource = distanceHospitalSource;
-
-        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
-    }
-
-    public Double getDistanceHospitalSource() {
-        return distanceHospitalSource;
-    }
 
     public void setStrongWind(boolean isStrongWind) {
         boolean oldValue = this.isStrongWind;

@@ -4,6 +4,8 @@ import controller.CellController;
 import controller.DroneController;
 import controller.EnvironmentController;
 import controller.MainController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -11,10 +13,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import model.Cell;
 import model.entity.drone.Drone;
+import model.entity.drone.DroneBusinessObject;
+import util.Wrapper;
 import view.CellView;
 import view.SelectableView;
 import view.drone.DroneView;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DroneSettingsPanelController extends SettingsPanelController<Drone> {
 
@@ -35,7 +42,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
 
     @FXML
-    ImageView sourceSettingsImageView, destinySettingsImageView;
+    ImageView /*sourceSettingsImageView,*/ destinySettingsImageView;
 
 
     @FXML
@@ -51,6 +58,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
     private boolean clickedSourceSettings;
     private boolean waitForClickInCell = false;
     private boolean saved = false;
+    private List<Wrapper> wrappersList = new ArrayList<>(Arrays.asList(Wrapper.values()));
 
 
     public static void init(AnchorPane defaultPanelSettingsAnchorPane) {
@@ -77,6 +85,15 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        List<String> nameWrappers = new ArrayList<>();
+        for(Wrapper wrapper : wrappersList){
+            nameWrappers.add(wrapper.name());
+        }
+
+        ObservableList<String> options1 =
+                FXCollections.observableArrayList(nameWrappers);
+        wrapperComboBox.setItems(options1);
 
     }
 
@@ -117,7 +134,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
         });
 
-        sourceSettingsImageView.setOnMouseClicked(event -> {
+/*        sourceSettingsImageView.setOnMouseClicked(event -> {
 
             clickedSourceSettings = true;
             clickedDestinySettings = false;
@@ -127,12 +144,12 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
             alert.showAndWait();
 
 
-        });
+        });*/
 
         destinySettingsImageView.setOnMouseClicked(event -> {
 
-            clickedSourceSettings = false;
-            clickedDestinySettings = true;
+            /*clickedSourceSettings = false;
+            clickedDestinySettings = true;*/
             waitForClickInCell =true;
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Select Destiny Cell View", ButtonType.OK);
@@ -157,8 +174,8 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
         wrapperLabel.setDisable(true);
         wrapperComboBox.setDisable(true);
         saveButton.setDisable(true);
-        sourceSettingsImageView.setDisable(true);
-        sourceSettingsImageView.setOpacity(0.3);
+       /* sourceSettingsImageView.setDisable(true);
+        sourceSettingsImageView.setOpacity(0.3);*/
 
         destinySettingsImageView.setDisable(true);
         destinySettingsImageView.setOpacity(0.3);
@@ -187,8 +204,8 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
         wrapperLabel.setDisable(false);
         wrapperComboBox.setDisable(false);
 
-        sourceSettingsImageView.setDisable(false);
-        sourceSettingsImageView.setOpacity(1);
+      /*  sourceSettingsImageView.setDisable(false);
+        sourceSettingsImageView.setOpacity(1);*/
 
         destinySettingsImageView.setDisable(false);
         destinySettingsImageView.setOpacity(1);
@@ -207,16 +224,19 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
         selectedDrone.setBatteryPerBlock(Double.parseDouble(consumptionPerBlockTextView.getText()));
         selectedDrone.setBatteryPerSecond(Double.parseDouble(consumptionPerSecondTextView.getText()));
 
-        int srcI = Integer.parseInt(currentSourceCell.getText().split(",")[0].replace("<",""));
-        int srcJ = Integer.parseInt(currentSourceCell.getText().split(",")[1].replace(">",""));
+//        int srcI = Integer.parseInt(currentSourceCell.getText().split(",")[0].replace("<",""));
+//        int srcJ = Integer.parseInt(currentSourceCell.getText().split(",")[1].replace(">",""));
 
         int destI = Integer.parseInt(currentDestinyCell.getText().split(",")[0].replace("<",""));
         int destJ = Integer.parseInt(currentDestinyCell.getText().split(",")[1].replace(">",""));
 
 
-        selectedDrone.setSourceCell(CellController.getInstance().getCellFrom(srcI, srcJ));
+        //selectedDrone.setSourceCell(CellController.getInstance().getCellFrom(srcI, srcJ));
+
+        selectedDrone.setWrapper(wrappersList.get(wrapperComboBox.getSelectionModel().getSelectedIndex()));
 
         selectedDrone.setDestinyCell(CellController.getInstance().getCellFrom(destI, destJ));
+        DroneBusinessObject.updateDistances(selectedDrone);
 
         enableSettingsViews();
     }
@@ -247,6 +267,10 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
         currentSourceCell.setText(currentSourceCellString);
         currentDestinyCell.setText(currentDestinyCellString);
 
+        Wrapper currentWrapper = selectedDrone.getWrapper();
+
+        wrapperComboBox.getSelectionModel().select(currentWrapper.name());
+
 
     }
 
@@ -264,11 +288,12 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
     @Override
     public void notifyMouseClick(SelectableView selectableView) {
         if(waitForClickInCell){
-            if (selectableView instanceof CellView) {
 
-                CellView cellview = (CellView) selectableView;
+
+                CellView cellview = selectableView.getCurrentCellView();
                 Cell cell = CellController.getInstance().getCellFrom(cellview.getUniqueID());
 
+/*
                 if (clickedSourceSettings) {
                     currentSourceCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
                     clickedSourceSettings = false;
@@ -278,9 +303,11 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
                     currentDestinyCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
                     clickedDestinySettings = false;
                 }
+*/
+                currentDestinyCell.setText("<" + cell.getRowPosition() + "," + cell.getColumnPosition() + ">");
 
                 waitForClickInCell = false;
-            }
+
         }else {
             if (selectableView instanceof DroneView) {
                 DroneView droneView = (DroneView) selectableView;

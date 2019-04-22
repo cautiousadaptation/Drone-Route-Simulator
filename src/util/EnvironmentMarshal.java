@@ -1,17 +1,18 @@
 package util;
 
 import controller.*;
+import model.Cell;
 import model.entity.Antenna;
 import model.entity.Hospital;
 import model.entity.River;
 import model.entity.boat.Boat;
+import model.entity.boat.BoatBusinessObject;
 import model.entity.drone.Drone;
+import model.entity.drone.DroneBusinessObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-import util.exceptions.ClickOutsideRegionException;
-import util.exceptions.MinimumHospitalQuantityException;
 import view.CellView;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -44,8 +45,8 @@ abstract public class EnvironmentMarshal {
             Element riverElement = document.createElement(ConstantXml.RIVER_ELEMENT);
 
             riverElement.setAttribute(ConstantXml.UNIQUE_ID_ATTRIBUTE,river.getUniqueID());
-            riverElement.setAttribute(ConstantXml.COLUMN_POSITION_ATTRIBUTE, String.valueOf(river.getColumnPosition()));
-            riverElement.setAttribute(ConstantXml.ROW_POSITION_ATTRIBUTE, String.valueOf(river.getRowPosition()));
+            riverElement.setAttribute(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE, String.valueOf(river.getColumnPosition()));
+            riverElement.setAttribute(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE, String.valueOf(river.getRowPosition()));
 
             riverElements.appendChild(riverElement);
 
@@ -62,8 +63,9 @@ abstract public class EnvironmentMarshal {
             Element hospitalElement = document.createElement(ConstantXml.HOSPITAL_ELEMENT);
 
             hospitalElement.setAttribute(ConstantXml.UNIQUE_ID_ATTRIBUTE,hospital.getUniqueID());
-            hospitalElement.setAttribute(ConstantXml.COLUMN_POSITION_ATTRIBUTE, String.valueOf(hospital.getColumnPosition()));
-            hospitalElement.setAttribute(ConstantXml.ROW_POSITION_ATTRIBUTE, String.valueOf(hospital.getRowPosition()));
+            hospitalElement.setAttribute(ConstantXml.LABEL, hospital.getLabel());
+            hospitalElement.setAttribute(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE, String.valueOf(hospital.getColumnPosition()));
+            hospitalElement.setAttribute(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE, String.valueOf(hospital.getRowPosition()));
 
             hospitalElements.appendChild(hospitalElement);
 
@@ -78,8 +80,9 @@ abstract public class EnvironmentMarshal {
             Element antennaElement = document.createElement(ConstantXml.ANTENNA_ELEMENT);
 
             antennaElement.setAttribute(ConstantXml.UNIQUE_ID_ATTRIBUTE, antenna.getUniqueID());
-            antennaElement.setAttribute(ConstantXml.COLUMN_POSITION_ATTRIBUTE, String.valueOf(antenna.getColumnPosition()));
-            antennaElement.setAttribute(ConstantXml.ROW_POSITION_ATTRIBUTE, String.valueOf(antenna.getRowPosition()));
+            antennaElement.setAttribute(ConstantXml.LABEL, antenna.getLabel());
+            antennaElement.setAttribute(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE, String.valueOf(antenna.getColumnPosition()));
+            antennaElement.setAttribute(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE, String.valueOf(antenna.getRowPosition()));
 
             antennaElements.appendChild(antennaElement);
 
@@ -95,8 +98,17 @@ abstract public class EnvironmentMarshal {
             Element droneElement = document.createElement(ConstantXml.DRONE_ELEMENT);
 
             droneElement.setAttribute(ConstantXml.UNIQUE_ID_ATTRIBUTE, drone.getUniqueID());
-            droneElement.setAttribute(ConstantXml.COLUMN_POSITION_ATTRIBUTE, String.valueOf(drone.getInitialPositionJ()));
-            droneElement.setAttribute(ConstantXml.ROW_POSITION_ATTRIBUTE, String.valueOf(drone.getInitialPosistionI()));
+            droneElement.setAttribute(ConstantXml.LABEL, drone.getLabel());
+            droneElement.setAttribute(ConstantXml.BATERRY_CONSUMPTION_PER_BLOCK, String.valueOf(drone.getBatteryPerBlock()));
+            droneElement.setAttribute(ConstantXml.BATERRY_CONSUMPTION_PER_SECONDS, String.valueOf(drone.getBatteryPerSecond()));
+            droneElement.setAttribute(ConstantXml.INITIAL_BATERRY, String.valueOf(drone.getInitialBattery()));
+            droneElement.setAttribute(ConstantXml.WRAPPER, String.valueOf(drone.getWrapper().name()));
+
+            droneElement.setAttribute(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE, String.valueOf(drone.getSourceCell().getColumnPosition()));
+            droneElement.setAttribute(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE, String.valueOf(drone.getSourceCell().getRowPosition()));
+
+            droneElement.setAttribute(ConstantXml.DESTINY_COLUMN_POSITION_ATTRIBUTE, String.valueOf(drone.getDestinyCell().getColumnPosition()));
+            droneElement.setAttribute(ConstantXml.DESTINY_ROW_POSITION_ATTRIBUTE, String.valueOf(drone.getDestinyCell().getRowPosition()));
 
             droneElements.appendChild(droneElement);
 
@@ -106,13 +118,18 @@ abstract public class EnvironmentMarshal {
         Element boatElements = document.createElement(ConstantXml.ROOT_BOAT_ELEMENT);
         environmentElements.appendChild(boatElements);
 
-        for(Boat boat : BoatController.getInstance().getBoatMap().values()){
+        for(Boat boat : BoatAutomaticController.getInstance().getBoatMap().values()){
 
             Element boatElement = document.createElement(ConstantXml.BOAT_ELEMENT);
 
             boatElement.setAttribute(ConstantXml.UNIQUE_ID_ATTRIBUTE, boat.getUniqueID());
-            boatElement.setAttribute(ConstantXml.COLUMN_POSITION_ATTRIBUTE, String.valueOf(boat.getInitialCollunmPosition()));
-            boatElement.setAttribute(ConstantXml.ROW_POSITION_ATTRIBUTE, String.valueOf(boat.getInitialRowPosition()));
+
+            boatElement.setAttribute(ConstantXml.LABEL, boat.getLabel());
+            boatElement.setAttribute(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE, String.valueOf(boat.getSourceCell().getColumnPosition()));
+            boatElement.setAttribute(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE, String.valueOf(boat.getSourceCell().getRowPosition()));
+
+            boatElement.setAttribute(ConstantXml.DESTINY_COLUMN_POSITION_ATTRIBUTE, String.valueOf(boat.getDestinyCell().getColumnPosition()));
+            boatElement.setAttribute(ConstantXml.DESTINY_ROW_POSITION_ATTRIBUTE, String.valueOf(boat.getDestinyCell().getRowPosition()));
 
             boatElements.appendChild(boatElement);
 
@@ -153,21 +170,22 @@ abstract public class EnvironmentMarshal {
            }
 
            String uniqueID = riverNode.getAttributes().getNamedItem(ConstantXml.UNIQUE_ID_ATTRIBUTE).getNodeValue();
-           int columnPosition = Integer.parseInt(riverNode.getAttributes().getNamedItem(ConstantXml.COLUMN_POSITION_ATTRIBUTE).getNodeValue());
-           int rowPosition = Integer.parseInt(riverNode.getAttributes().getNamedItem(ConstantXml.ROW_POSITION_ATTRIBUTE).getNodeValue());
+           int columnPosition = Integer.parseInt(riverNode.getAttributes().getNamedItem(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+           int rowPosition = Integer.parseInt(riverNode.getAttributes().getNamedItem(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE).getNodeValue());
 
            CellController cellController = CellController.getInstance();
            CellView cellView = cellController.getCellViewFrom(rowPosition,columnPosition);
 
-           EnvironmentController environmentController = EnvironmentController.getInstance();
+         /*  EnvironmentController environmentController = EnvironmentController.getInstance();
 
            try {
                environmentController.createRiver(uniqueID, cellView);
            } catch (ClickOutsideRegionException e) {
                e.printStackTrace();
            }
+*/
 
-
+         RiverController.getInstance().createRiver(uniqueID, cellView);
        }
 
 
@@ -183,21 +201,23 @@ abstract public class EnvironmentMarshal {
             }
 
             String uniqueID = hospitalNode.getAttributes().getNamedItem(ConstantXml.UNIQUE_ID_ATTRIBUTE).getNodeValue();
-            int columnPosition = Integer.parseInt(hospitalNode.getAttributes().getNamedItem(ConstantXml.COLUMN_POSITION_ATTRIBUTE).getNodeValue());
-            int rowPosition = Integer.parseInt(hospitalNode.getAttributes().getNamedItem(ConstantXml.ROW_POSITION_ATTRIBUTE).getNodeValue());
+            String label = hospitalNode.getAttributes().getNamedItem(ConstantXml.LABEL).getNodeValue();
+            int columnPosition = Integer.parseInt(hospitalNode.getAttributes().getNamedItem(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+            int rowPosition = Integer.parseInt(hospitalNode.getAttributes().getNamedItem(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE).getNodeValue());
 
             CellController cellController = CellController.getInstance();
             CellView cellView = cellController.getCellViewFrom(rowPosition,columnPosition);
 
-            EnvironmentController environmentController = EnvironmentController.getInstance();
+         /*   EnvironmentController environmentController = EnvironmentController.getInstance();
 
             try {
                 environmentController.createHospital(uniqueID, cellView);
             } catch (ClickOutsideRegionException e) {
                 e.printStackTrace();
             }
+*/
 
-
+         HospitalController.getInstance().createHospital(uniqueID, label, cellView);
         }
 
         //ANTENNA
@@ -212,19 +232,22 @@ abstract public class EnvironmentMarshal {
             }
 
             String uniqueID = antennaNode.getAttributes().getNamedItem(ConstantXml.UNIQUE_ID_ATTRIBUTE).getNodeValue();
-            int columnPosition = Integer.parseInt(antennaNode.getAttributes().getNamedItem(ConstantXml.COLUMN_POSITION_ATTRIBUTE).getNodeValue());
-            int rowPosition = Integer.parseInt(antennaNode.getAttributes().getNamedItem(ConstantXml.ROW_POSITION_ATTRIBUTE).getNodeValue());
+            String label = antennaNode.getAttributes().getNamedItem(ConstantXml.LABEL).getNodeValue();
+            int columnPosition = Integer.parseInt(antennaNode.getAttributes().getNamedItem(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+            int rowPosition = Integer.parseInt(antennaNode.getAttributes().getNamedItem(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE).getNodeValue());
 
             CellController cellController = CellController.getInstance();
             CellView cellView = cellController.getCellViewFrom(rowPosition,columnPosition);
 
-            EnvironmentController environmentController = EnvironmentController.getInstance();
+            AntennaController.getInstance().createAntenna(uniqueID,label, cellView);
+
+          /*  EnvironmentController environmentController = EnvironmentController.getInstance();
 
             try {
                 environmentController.createAntenna(uniqueID, cellView);
             } catch (ClickOutsideRegionException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
         }
@@ -242,22 +265,43 @@ abstract public class EnvironmentMarshal {
             }
 
             String uniqueID = droneNode.getAttributes().getNamedItem(ConstantXml.UNIQUE_ID_ATTRIBUTE).getNodeValue();
-            int columnPosition = Integer.parseInt(droneNode.getAttributes().getNamedItem(ConstantXml.COLUMN_POSITION_ATTRIBUTE).getNodeValue());
-            int rowPosition = Integer.parseInt(droneNode.getAttributes().getNamedItem(ConstantXml.ROW_POSITION_ATTRIBUTE).getNodeValue());
+            String label = droneNode.getAttributes().getNamedItem(ConstantXml.LABEL).getNodeValue();
+
+            double batteryConsumptionPerBlock = Double.parseDouble(droneNode.getAttributes().getNamedItem(ConstantXml.BATERRY_CONSUMPTION_PER_BLOCK).getNodeValue());
+            double batteryConsumptionPerSeconds = Double.parseDouble(droneNode.getAttributes().getNamedItem(ConstantXml.BATERRY_CONSUMPTION_PER_SECONDS).getNodeValue());
+            double initialBattery = Double.parseDouble(droneNode.getAttributes().getNamedItem(ConstantXml.INITIAL_BATERRY).getNodeValue());
+            Wrapper wrapper = Wrapper.valueOf(droneNode.getAttributes().getNamedItem(ConstantXml.WRAPPER).getNodeValue());
+
+            int sourceColumnPosition = Integer.parseInt(droneNode.getAttributes().getNamedItem(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+            int sourceRowPosition = Integer.parseInt(droneNode.getAttributes().getNamedItem(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE).getNodeValue());
+
+            int destinyColumnPosition = Integer.parseInt(droneNode.getAttributes().getNamedItem(ConstantXml.DESTINY_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+            int destinyRowPosition = Integer.parseInt(droneNode.getAttributes().getNamedItem(ConstantXml.DESTINY_ROW_POSITION_ATTRIBUTE).getNodeValue());
 
             CellController cellController = CellController.getInstance();
-            CellView cellView = cellController.getCellViewFrom(rowPosition,columnPosition);
-
+            CellView sourceCellView = cellController.getCellViewFrom(sourceRowPosition,sourceColumnPosition);
+            Cell destinyCell = cellController.getCellFrom(destinyRowPosition, destinyColumnPosition);
+/*
             EnvironmentController environmentController = EnvironmentController.getInstance();
 
             try {
-                environmentController.createDrone(uniqueID, cellView);
+                Drone drone = environmentController.createDrone(uniqueID, sourceCellView);
+                drone.setDestinyCell(destinyCell);
+
             } catch (ClickOutsideRegionException e) {
                 e.printStackTrace();
-            } /*catch (MinimumHospitalQuantityException e) {
+            } *//*catch (MinimumHospitalQuantityException e) {
                 e.printStackTrace();
             }*/
 
+            Drone drone =  DroneController.getInstance().createDrone(uniqueID, label, sourceCellView);
+            drone.setDestinyCell(destinyCell);
+            DroneBusinessObject.updateDistances(drone);
+            drone.setBatteryPerBlock(batteryConsumptionPerBlock);
+            drone.setBatteryPerSecond(batteryConsumptionPerSeconds);
+            drone.setInitialBattery(initialBattery);
+            drone.setCurrentBattery(initialBattery);
+            drone.setWrapper(wrapper);
 
         }
 
@@ -274,19 +318,32 @@ abstract public class EnvironmentMarshal {
             }
 
             String uniqueID = boatNode.getAttributes().getNamedItem(ConstantXml.UNIQUE_ID_ATTRIBUTE).getNodeValue();
-            int columnPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.COLUMN_POSITION_ATTRIBUTE).getNodeValue());
-            int rowPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.ROW_POSITION_ATTRIBUTE).getNodeValue());
+            String label = boatNode.getAttributes().getNamedItem(ConstantXml.LABEL).getNodeValue();
+
+            int sourcecolumnPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+            int sourcerowPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE).getNodeValue());
+
+            int destinyColumnPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.DESTINY_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
+            int destinyRowPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.DESTINY_ROW_POSITION_ATTRIBUTE).getNodeValue());
 
             CellController cellController = CellController.getInstance();
-            CellView cellView = cellController.getCellViewFrom(rowPosition,columnPosition);
+            CellView cellView = cellController.getCellViewFrom(sourcerowPosition,sourcecolumnPosition);
 
+            Cell destinyCell = cellController.getCellFrom(destinyRowPosition,destinyColumnPosition);
+
+            Boat boat = BoatAutomaticController.getInstance().createBoat(uniqueID,label,cellView);
+            boat.setDestinyCell(destinyCell);
+            BoatBusinessObject.updateDistances(boat);
+/*
             EnvironmentController environmentController = EnvironmentController.getInstance();
 
             try {
-                environmentController.createBoat(uniqueID, cellView);
+                Boat boat = environmentController.createBoat(uniqueID, cellView);
+                boat.setDestinyCell(destinyCell);
+
             } catch (ClickOutsideRegionException e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
         }

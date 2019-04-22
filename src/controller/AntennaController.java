@@ -34,15 +34,11 @@ public class AntennaController {
 
 
 
-    public Antenna createAntenna(String uniqueID, String labelAntenna, CellView currentCellView) throws ClickOutsideRegionException {
+    public Antenna createAntenna(String uniqueID, String labelAntenna, CellView currentCellView) {
         Antenna antenna  = new Antenna(uniqueID, labelAntenna, currentCellView.getRowPosition(),
                 currentCellView.getCollunmPosition());
 
         antennaMap.put(uniqueID, antenna);
-
-        if(currentCellView == null){
-            throw new ClickOutsideRegionException();
-        }
 
         AntennaView antennaView = new AntennaViewImpl(uniqueID, labelAntenna, currentCellView);
 

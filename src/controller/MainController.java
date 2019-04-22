@@ -2,11 +2,7 @@ package controller;
 
 import controller.settings_panel.BoatSettingsPanelController;
 import controller.settings_panel.DroneSettingsPanelController;
-import controller.settings_panel.SettingsPanelController;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,17 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import util.StopWatch;
-import util.Wrapper;
 import view.CellView;
 import view.SelectableView;
-import view.boat.BoatView;
-import view.drone.DroneView;
-
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
 
 public class MainController extends Application {
 
@@ -73,8 +60,7 @@ public class MainController extends Application {
     private LoggerController loggerController;
     private EnvironmentController environmentController;
     private static MainController instance;
-    private List<Wrapper> wrappersList = new ArrayList<>(Arrays.asList(Wrapper.values()));
-    private boolean saved = true;
+    private boolean canCreateElements = true;
     private MenuController menuControler;
 
 
@@ -151,7 +137,7 @@ public class MainController extends Application {
 
         startToggleButton.setOnAction(event -> {
 
-            if(!saved){
+            if(!canCreateElements){
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You must save new settings", ButtonType.OK);
                 alert.showAndWait();
 
@@ -331,7 +317,7 @@ public class MainController extends Application {
         toggleGroup1.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
 
             if(newValue != null && newValue.isSelected()){
-                if(!saved){
+                if(!canCreateElements){
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You must save new settings", ButtonType.OK);
                     alert.showAndWait();
 
@@ -423,7 +409,7 @@ public class MainController extends Application {
             DroneSettingsPanelController.getInstance().show();
             BoatSettingsPanelController.getInstance().hide();
 
-            saved = false;
+            canCreateElements = false;
 
             droneToggleButton.setSelected(false);
 
@@ -432,7 +418,7 @@ public class MainController extends Application {
         }else if(boatToggleButton.isSelected()){
             environmentController.createBoat(selectedCellView);
 
-            saved = false;
+            canCreateElements = false;
             DroneSettingsPanelController.getInstance().hide();
             BoatSettingsPanelController.getInstance().show();
 
@@ -515,7 +501,9 @@ public class MainController extends Application {
 
             DroneSettingsPanelController.getInstance().notifyMouseClick(currentSelectableView);
             BoatSettingsPanelController.getInstance().notifyMouseClick(currentSelectableView);
-            saved = false;
+
+            if(!isEmpty(defaultPanelSettingsAnchorPane))
+                canCreateElements = false;
 
             }
 
@@ -532,6 +520,26 @@ public class MainController extends Application {
             return selectedCellView;
         }
     }
+
+
+
+    private boolean isEmpty(AnchorPane defaultPanelSettingsAnchorPane) {
+        return defaultPanelSettingsAnchorPane.getChildren().isEmpty();
+    }
+
+
+
+ /*          environmentController.getEnvironmentView().getGridpane().setOnKeyPressed(event -> {
+
+        if (!running) {
+            return;
+        }
+
+        if (environmentController.getSelectedDrone() != null) {
+            environmentController.notifyKeyEvent(event.getCode());
+        }
+
+    });*/
 
 
 
@@ -559,7 +567,7 @@ public class MainController extends Application {
         droneToggleButton.setSelected(false);
         boatToggleButton.setSelected(false);
 
-        saved =true;
+        canCreateElements = true;
 
 
         environmentController.getEnvironmentView().getGridpane().requestFocus();

@@ -2,18 +2,15 @@ package wrappers;
 
 import controller.*;
 import javafx.application.Platform;
-import model.entity.Hospital;
 import model.entity.drone.Drone;
 import model.entity.drone.DroneBusinessObject;
 import org.aspectj.lang.JoinPoint;
 import util.StopWatch;
-import util.Wrapper;
 import view.CellView;
 import view.boat.BoatView;
 import view.drone.DroneView;
-import view.hospital.HospitalView;
 import view.river.RiverView;
-
+import util.Wrapper;
 import java.util.*;
 
 public aspect Wrapper8 {
@@ -43,15 +40,18 @@ public aspect Wrapper8 {
 
             &&
 
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() > 60)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() > 60)
 
-            &&
-             ((getCloserBoatFromDrone(thisJoinPoint)) == null)
             &&
 
             (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper8)
 
+            &&
+
+            ((getCloserBoatFromDrone(thisJoinPoint)) == null)
+
             ){
+
         moveASide(thisJoinPoint);
     }
 
@@ -59,7 +59,7 @@ public aspect Wrapper8 {
             &&
             if
                     (
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() <=60)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() <=60)
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).isStrongWind())
             &&
@@ -135,7 +135,7 @@ public aspect Wrapper8 {
             &&
             if
                     (
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalDestiny() < ((Drone)thisJoinPoint.getArgs()[0]).getDistanceHospitalSource())
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() < ((Drone)thisJoinPoint.getArgs()[0]).getDistanceSource())
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).getCurrentBattery() > 10)
             &&
@@ -229,12 +229,12 @@ public aspect Wrapper8 {
 
         DroneView droneView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID());
 
-        BoatController boatController = BoatController.getInstance();
+        BoatAutomaticController boatAutomaticController = BoatAutomaticController.getInstance();
         CellController cellController = CellController.getInstance();
         Double closerDistance = 99999999D;
         BoatView closerBoatView = null;
 
-        for (BoatView boatView : boatController.getBoatViewMap().values()) {
+        for (BoatView boatView : boatAutomaticController.getBoatViewMap().values()) {
             double tempDistance = cellController.calculeteDistanceFrom(boatView, droneView);
 
             if (tempDistance < closerDistance) {
@@ -277,7 +277,7 @@ public aspect Wrapper8 {
 
                     } else if(!dronesAreOnBoatInSet.contains(drone)) {
                         // boat go drone
-                        BoatController.getInstance().goDestinyAutomatic(boatView, droneView.getCurrentCellView());
+                        BoatAutomaticController.getInstance().goDestinyAutomatic(boatView, droneView.getCurrentCellView());
 
                     }else {
                         //boat go hospital
@@ -289,7 +289,7 @@ public aspect Wrapper8 {
                         }
 
 
-                        BoatController.getInstance().goDestinyAutomatic(boatView, newCloserRiverView.getCurrentCellView());
+                        BoatAutomaticController.getInstance().goDestinyAutomatic(boatView, newCloserRiverView.getCurrentCellView());
                     }
                 });
 
