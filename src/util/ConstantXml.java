@@ -9,11 +9,11 @@ public class ConstantXml {
     public static  final String DESTINY_ROW_POSITION_ATTRIBUTE ="destinyRowPosition";
 
     //Specifiques attribuites
-    public static final String LABEL = "label";
-    public static final String BATERRY_CONSUMPTION_PER_BLOCK= "baterryConsumptionPerBlock";
-    public static final String BATERRY_CONSUMPTION_PER_SECONDS= "baterryConsumptionPerBlock";
-    public static final String INITIAL_BATERRY= "initialBaterry";
-    public static final String WRAPPER = "wrapper";
+    public static final String LABEL_ATTRIBUTE = "label";
+    public static final String BATERRY_CONSUMPTION_PER_BLOCK_ATTRIBUTE = "baterryConsumptionPerBlock";
+    public static final String BATERRY_CONSUMPTION_PER_SECONDS_ATTRIBUTE = "baterryConsumptionPerBlock";
+    public static final String INITIAL_BATERRY_ATTRIBUTE = "initialBaterry";
+    public static final String WRAPPER_ID_ATTRIBUTE = "wrapperId";
 
 
 

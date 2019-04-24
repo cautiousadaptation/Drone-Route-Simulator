@@ -1,4 +1,4 @@
-package wrappers;
+package wrappers.trash;
 
 import controller.*;
 import javafx.application.Platform;
@@ -6,7 +6,6 @@ import model.entity.drone.Drone;
 import model.entity.drone.DroneBusinessObject;
 import org.aspectj.lang.JoinPoint;
 import util.StopWatch;
-import util.Wrapper;
 import view.CellView;
 import view.boat.BoatView;
 import view.drone.DroneView;
@@ -41,7 +40,7 @@ public aspect Wrapper4 {
                     (
             (((Drone)thisJoinPoint.getArgs()[0]).isOnWater())
             &&
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
         callBoat(thisJoinPoint);
 
@@ -55,7 +54,7 @@ public aspect Wrapper4 {
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).isStrongWind())
             &&
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
 
         keepFlying(thisJoinPoint);
@@ -68,7 +67,7 @@ public aspect Wrapper4 {
             if(
             (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
             &&
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
         // pass o landing when drone are waiting boat
         return false;
@@ -79,7 +78,7 @@ public aspect Wrapper4 {
             if(
             (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
             &&
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
         // pass o updateBatteryPerSecond when drone are waiting boat
 
@@ -88,7 +87,7 @@ public aspect Wrapper4 {
     after(): resetSettingsDrone()
             &&
             if(
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             &&(
             (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
             ||
@@ -108,7 +107,7 @@ public aspect Wrapper4 {
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).getCurrentBattery() > 10)
             &&
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
 
         glide(thisJoinPoint);
@@ -137,7 +136,7 @@ public aspect Wrapper4 {
     void around(): applyEconomyMode()
             &&
             if(
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapper() == Wrapper.Wrapper4)
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
 
        /* notinueNormalMode(thisJoinPoint);*/

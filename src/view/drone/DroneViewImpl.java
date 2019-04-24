@@ -13,7 +13,7 @@ import javafx.scene.text.TextAlignment;
 import model.entity.drone.Drone;
 import model.entity.drone.DroneBusinessObject;
 import util.SelectHelper;
-import util.Wrapper;
+import util.WrapperHelper;
 import view.CellView;
 import view.EnvironmentView;
 
@@ -372,8 +372,8 @@ public class DroneViewImpl extends DroneView {
             return;
         }
 
-        if (methodName.equals("setWrapper")
-                && (Wrapper) oldValue != (Wrapper) newValue) {
+        if (methodName.equals("setWrapperId")
+                && (int) oldValue != (int) newValue) {
 
             if (wrapperStyleRectangule != null) {
                 this.getChildren().remove(wrapperStyleRectangule);
@@ -385,7 +385,7 @@ public class DroneViewImpl extends DroneView {
                 wrapperStyleRectangule = new Rectangle(30, 30);
                 wrapperStyleRectangule.setFill(Color.TRANSPARENT);
                 wrapperStyleRectangule.setStrokeWidth(3);
-                wrapperStyleRectangule.setStroke(((Wrapper) newValue).getColor());
+                wrapperStyleRectangule.setStroke(WrapperHelper.getInstance().getColorFrom((Integer) newValue));
                 this.getChildren().add(wrapperStyleRectangule);
 
             }

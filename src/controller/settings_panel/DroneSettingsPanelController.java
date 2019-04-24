@@ -14,16 +14,21 @@ import javafx.scene.layout.AnchorPane;
 import model.Cell;
 import model.entity.drone.Drone;
 import model.entity.drone.DroneBusinessObject;
-import util.Wrapper;
+import org.xml.sax.SAXException;
+import util.WrapperHelper;
 import view.CellView;
 import view.SelectableView;
 import view.drone.DroneView;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DroneSettingsPanelController extends SettingsPanelController<Drone> {
+
 
     private Drone selectedDrone;
     private AnchorPane droneSettingsPanelAnchorPane;
@@ -42,7 +47,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
 
     @FXML
-    ImageView /*sourceSettingsImageView,*/ destinySettingsImageView;
+    ImageView destinySettingsImageView, wrapperInformationImageView;
 
 
     @FXML
@@ -58,7 +63,6 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
     private boolean clickedSourceSettings;
     private boolean waitForClickInCell = false;
     private boolean saved = false;
-    private List<Wrapper> wrappersList = new ArrayList<>(Arrays.asList(Wrapper.values()));
 
 
     public static void init(AnchorPane defaultPanelSettingsAnchorPane) {
@@ -86,20 +90,19 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
             e.printStackTrace();
         }
 
-        List<String> nameWrappers = new ArrayList<>();
-        for(Wrapper wrapper : wrappersList){
-            nameWrappers.add(wrapper.name());
-        }
+        WrapperHelper wrapperHelper = WrapperHelper.getInstance();
+        List<String> wrapperNameList = wrapperHelper.getNameShownPanelListFrom(this.getClass().getSimpleName());
 
-        ObservableList<String> options1 =
-                FXCollections.observableArrayList(nameWrappers);
-        wrapperComboBox.setItems(options1);
+
+
+        ObservableList<String> nameOptions =
+                FXCollections.observableArrayList(wrapperNameList);
+        wrapperComboBox.setItems(nameOptions);
+
 
     }
 
     public void show(){
-
-
 
         hide();
         defaultPanelSettingsAnchorPane.getChildren().add(droneSettingsPanelAnchorPane);
@@ -156,6 +159,16 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
             alert.showAndWait();
 
 
+        });
+
+        wrapperInformationImageView.setOnMouseClicked(event -> {
+            String selectedItem = (String) wrapperComboBox.getSelectionModel().getSelectedItem();
+            int wrapperId = Integer.parseInt(WrapperHelper.getInstance().getIdFrom(selectedItem));
+
+           String descriptionWrapper = WrapperHelper.getInstance().getDescriptionFrom(wrapperId);
+           String title = WrapperHelper.getInstance().getNameShownPanelFrom(wrapperId);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, title.concat(":\n") + descriptionWrapper, ButtonType.OK);
+            alert.showAndWait();
         });
 
     }
@@ -232,8 +245,9 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
 
         //selectedDrone.setSourceCell(CellController.getInstance().getCellFrom(srcI, srcJ));
-
-        selectedDrone.setWrapper(wrappersList.get(wrapperComboBox.getSelectionModel().getSelectedIndex()));
+        String selectedItem = (String) wrapperComboBox.getSelectionModel().getSelectedItem();
+        int wrapperId = Integer.parseInt(WrapperHelper.getInstance().getIdFrom(selectedItem));
+        selectedDrone.setWrapperId(wrapperId);
 
         selectedDrone.setDestinyCell(CellController.getInstance().getCellFrom(destI, destJ));
         DroneBusinessObject.updateDistances(selectedDrone);
@@ -258,7 +272,6 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
                         + "," + selectedDrone.getDestinyCell().getColumnPosition() + ">";
 
         Boolean isAutomatic = selectedDrone.isAutomatic();
-        Boolean isWrapper = selectedDrone.isWrapper();
 
         currentDroneTextField.setText(droneLabel);
         consumptionPerBlockTextView.setText(String.valueOf(batteryPerBlock));
@@ -267,9 +280,9 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
         currentSourceCell.setText(currentSourceCellString);
         currentDestinyCell.setText(currentDestinyCellString);
 
-        Wrapper currentWrapper = selectedDrone.getWrapper();
+        int currentWrapperId = selectedDrone.getWrapperId();
 
-        wrapperComboBox.getSelectionModel().select(currentWrapper.name());
+        wrapperComboBox.getSelectionModel().select(currentWrapperId);
 
 
     }

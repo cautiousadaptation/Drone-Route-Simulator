@@ -6,7 +6,6 @@ import controller.CellController;
 import javafx.scene.input.KeyCode;
 import model.Cell;
 import model.entity.Entity;
-import util.Wrapper;
 import view.SelectableView;
 import view.river.RiverView;
 
@@ -53,7 +52,6 @@ public class Drone extends Entity {
     private Boolean isGoingAutomaticToDestiny = false;
     private Boolean isReturningToHome = false;
 
-    private Boolean isWrapper = false;
     private Boolean isLost = false;
 
     private Boolean selected = false;
@@ -65,7 +63,7 @@ public class Drone extends Entity {
 
     public static int COUNT_DRONE = 1;
 
-    private Wrapper wrapper = Wrapper.None;
+    private int wrapperId = 0;
     private String label = "";
 
 
@@ -100,22 +98,17 @@ public class Drone extends Entity {
     }
 
 
-
-    public boolean isWrapper() {
-        return isWrapper;
-    }
-
 /*
     public void setAspect(boolean isAspect) {
 
-        boolean oldValue = this.isWrapper;
+        boolean oldValue = this.getWrapperId;
         boolean newValue = isAspect;
 
         if(oldValue == newValue){
             return;
         }
 
-        this.isWrapper = isAspect;
+        this.getWrapperId = isAspect;
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
 
@@ -144,19 +137,19 @@ public class Drone extends Entity {
     }
 
 
-    public Wrapper getWrapper() {
-        return wrapper;
+    public int getWrapperId() {
+        return wrapperId;
     }
 
-    public void setWrapper(Wrapper wrapper) {
-        Wrapper oldValue = this.wrapper;
-        Wrapper newValue = wrapper;
+    public void setWrapperId(int wrapperId) {
+        int oldValue = this.wrapperId;
+        int newValue = wrapperId;
 
         if(oldValue == newValue){
             return;
         }
 
-        this.wrapper = wrapper;
+        this.wrapperId = wrapperId;
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
 
