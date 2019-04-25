@@ -24,7 +24,7 @@ public aspect NoneWithoutBadConnection {
     &&
     if
     (
-    (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 1)
+    (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
     ){
        // around setBadConnection
     }
@@ -33,7 +33,7 @@ public aspect NoneWithoutBadConnection {
     &&
     if
     (
-    (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 1)
+    (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
     ){
         // around applyEconomyMode
     }

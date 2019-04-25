@@ -182,7 +182,6 @@ public class BoatView  extends Group implements SelectableView, Boat.Listener {
     }
 
     private void updadePositionBoatView(Boat boat) {
-        System.out.println("updadePositionBoatView");
         if(currentCellView == null){
             return;
         }

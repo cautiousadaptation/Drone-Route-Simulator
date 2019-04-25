@@ -168,7 +168,7 @@ public class BoatAutomaticController {
 
     }
 
-    private void navigate(Boat boat) {
+    public void navigate(Boat boat) {
         BoatView boatView = getBoatViewFrom(boat.getUniqueID());
         System.out.println("entrou no navegation");
 

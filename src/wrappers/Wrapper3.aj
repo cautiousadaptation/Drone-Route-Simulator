@@ -112,9 +112,9 @@ public aspect Wrapper3 {
     void around(): navigate()
             &&
             if(
-            (boatInSoSInSet.contains(((Boat)thisJoinPoint.getArgs()[0])) == true)
+            (boatInSoSInSet.contains(((Boat)thisJoinPoint.getArgs()[0])))
             ){
-
+        System.out.println("around navigate");
         // pass
 
     }
@@ -122,9 +122,9 @@ public aspect Wrapper3 {
     void around(): updateBatteryPerSecond()
             &&
             if(
-            (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
-            &&
             (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 3)
+            &&
+            (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
             ){
 
         // pass o updateBatteryPerSecond when drone are waiting boat

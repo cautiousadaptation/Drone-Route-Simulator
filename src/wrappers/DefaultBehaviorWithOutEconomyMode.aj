@@ -8,7 +8,7 @@ public aspect DefaultBehaviorWithOutEconomyMode {
     &&
     if
     (
-    (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
+    (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 0)
     ){
         // around applyEconomyMode
     }

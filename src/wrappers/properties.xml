@@ -5,7 +5,7 @@
                     id="0"
                     name-shown-panel="None"
                     color=""
-                    description="default behavior (-) economy mode"
+                    description="default behavior(-)economyMode"
                     class-name-settings-controller="DroneSettingsPanelController"/>
 
     <WrapperElement name-file-aj="Wrapper1"
@@ -29,7 +29,7 @@
     <WrapperElement name-file-aj="NoneWithoutBadConnection"
                     id="4" name-shown-panel="None_not.bc"
                     color="#000000"
-                    description="Esse wrapper tem o comportamento normal, porem não é afetado pela antena (-) economy mode"
+                    description="default behavior(-)comp.antena(-)economyMode"
                     class-name-settings-controller ="DroneSettingsPanelController"/>
 
 </WrapperElements>

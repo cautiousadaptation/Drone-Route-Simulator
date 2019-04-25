@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import model.Cell;
 import model.entity.drone.Drone;
 import model.entity.drone.DroneBusinessObject;
@@ -155,7 +156,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
             clickedDestinySettings = true;*/
             waitForClickInCell =true;
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Select Destiny Cell View", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select Destiny Cell View", ButtonType.OK);
             alert.showAndWait();
 
 
@@ -167,8 +168,9 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
            String descriptionWrapper = WrapperHelper.getInstance().getDescriptionFrom(wrapperId);
            String title = WrapperHelper.getInstance().getNameShownPanelFrom(wrapperId);
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, title.concat(":\n") + descriptionWrapper, ButtonType.OK);
-            alert.showAndWait();
+           Text text = new Text(title.concat(":\n") + descriptionWrapper);
+           Alert alert = new Alert(Alert.AlertType.INFORMATION, text.getText(), ButtonType.OK);
+           alert.showAndWait();
         });
 
     }

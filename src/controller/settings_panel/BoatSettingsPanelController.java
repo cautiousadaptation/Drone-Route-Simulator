@@ -105,7 +105,7 @@ public class BoatSettingsPanelController extends SettingsPanelController<Boat> {
 
             waitForClickInCell =true;
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Select Destiny Cell View", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select Destiny Cell View", ButtonType.OK);
             alert.showAndWait();
 
 
