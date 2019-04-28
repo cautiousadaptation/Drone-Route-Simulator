@@ -1,3 +1,4 @@
+/*
 package wrappers.trash;
 
 import controller.*;
@@ -139,7 +140,9 @@ public aspect Wrapper4 {
             (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 4)
             ){
 
-       /* notinueNormalMode(thisJoinPoint);*/
+       */
+/* notinueNormalMode(thisJoinPoint);*//*
+
     }
 
 
@@ -151,11 +154,13 @@ public aspect Wrapper4 {
     }
 
 
-   /* private void notinueNormalMode(JoinPoint thisJoinPoint) {
+   */
+/* private void notinueNormalMode(JoinPoint thisJoinPoint) {
         Drone drone = (Drone) thisJoinPoint.getArgs()[0];
         System.out.println("Drone[" + drone.getLabel() + "] " + " Continue Normal Mode");
         LoggerController.getInstance().print("Drone[" + drone.getLabel() + "] " + "Continue Normal Mode");
-    }*/
+    }*//*
+
 
 
     private boolean callBoat(JoinPoint thisJoinPoint) {
@@ -166,7 +171,7 @@ public aspect Wrapper4 {
         DroneView droneView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID());
         BoatView boatView = getCloserBoatFromDrone(droneView);
 
-        if(CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(),
+        if(CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(),
                 boatView.getCurrentCellView()) > 150){
             return false;
         }
@@ -194,7 +199,7 @@ public aspect Wrapper4 {
         BoatView closerBoatView = null;
 
         for (BoatView boatView : boatAutomaticController.getBoatViewMap().values()) {
-            double tempDistance = cellController.calculeteDistanceFrom(boatView, droneView);
+            double tempDistance = cellController.calculeteDisplacementFrom(boatView, droneView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;
@@ -219,7 +224,7 @@ public aspect Wrapper4 {
             public void task() {
                 Platform.runLater(() -> {
 
-                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
+                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
                         // boat catch drone
                         droneView.getCurrentCellView().getChildren().remove(droneView);
                         System.out.println("Boat[" + boatView.getBoatLabel() + "] " + " Recovered Drone ["+drone.getLabel()+"]");
@@ -254,7 +259,7 @@ public aspect Wrapper4 {
 
             @Override
             public boolean conditionStop() {
-                if (CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
+                if (CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
 
                     dronesAreOnBoatInSet.remove(drone);
                     System.out.println("Drone[" + drone.getLabel() + "] " + "Arrived at Destination");
@@ -287,7 +292,7 @@ public aspect Wrapper4 {
                 continue;
             }
 
-            double tempDistance = cellController.calculeteDistanceFrom(riverView, cellView);
+            double tempDistance = cellController.calculeteDisplacementFrom(riverView, cellView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;
@@ -302,3 +307,4 @@ public aspect Wrapper4 {
 
 
 }
+*/

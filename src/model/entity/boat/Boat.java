@@ -3,6 +3,8 @@ package model.entity.boat;
 import controller.CellController;
 import model.Cell;
 import model.entity.Entity;
+import view.CellView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class Boat extends Entity {
     private Double distanceSource;
     private boolean returnToHome = false;
     private boolean stocked = false;
+    private List<CellView> route = new ArrayList<>();
 
 
     public Boat(String uniqueID, String label, Cell sourceCell) {
@@ -68,6 +71,14 @@ public class Boat extends Entity {
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
 
+    }
+
+    public void setRoute(List<CellView> route) {
+        this.route = route;
+    }
+
+    public List<CellView> getRoute() {
+        return route;
     }
 
     public interface Listener {

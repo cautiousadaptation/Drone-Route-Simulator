@@ -1,13 +1,16 @@
 package model.entity.boat;
 
+import controller.BoatAutomaticController;
 import controller.CellController;
 import controller.EnvironmentController;
 import model.Cell;
+import util.AStarAlgorithm;
 import view.CellView;
 import view.boat.BoatView;
 import view.river.RiverView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class BoatBusinessObject {
@@ -41,7 +44,7 @@ public abstract class BoatBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
     public static double distanceDroneWentUp(CellView boatCellView, CellView dstCellView) {
@@ -72,7 +75,7 @@ public abstract class BoatBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
     public static double distanceDroneWentLeft(CellView boatCellView, CellView dstCellView) {
@@ -102,7 +105,7 @@ public abstract class BoatBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
     public static double distanceDroneWentRight(CellView boatCellView, CellView dstCellView) {
@@ -126,6 +129,7 @@ public abstract class BoatBusinessObject {
         for(javafx.scene.Node node : cellView.getChildren()){
             if(node instanceof RiverView){
                 containRiverView = true;
+                break;
             }
         }
 
@@ -134,7 +138,7 @@ public abstract class BoatBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
     //todo pog
@@ -294,6 +298,12 @@ public abstract class BoatBusinessObject {
 
     public static void returnToHome(Boat boat) {
         boat.setReturnToHome(true);
+
+    }
+
+    public static void generateRoute(BoatView boatView, CellView dstCellView){
+        Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
+        boat.setRoute(AStarAlgorithm.buildRoute(boatView.getCurrentCellView(), dstCellView));
 
     }
 

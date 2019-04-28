@@ -429,7 +429,7 @@ public class EnvironmentController {
         CellView closerLandCellView = null;
 
         for(CellView landCellView : landCellViewList){
-            double newDistance = CellController.getInstance().calculeteDistanceFrom(droneView, landCellView);
+            double newDistance = CellController.getInstance().calculeteDisplacementFrom(droneView, landCellView);
 
             if(newDistance < closerDistance){
                 closerDistance = newDistance;

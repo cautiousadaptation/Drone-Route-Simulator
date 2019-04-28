@@ -961,7 +961,7 @@ public class DroneBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
 
 
     }
@@ -978,7 +978,7 @@ public class DroneBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
     public static double distanceDroneWentLeft(CellView sourceCellView, CellView destinyCellView) {
@@ -993,7 +993,7 @@ public class DroneBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
     public static double distanceDroneWentRight(CellView sourceCellView, CellView destinyCellView) {
@@ -1008,7 +1008,7 @@ public class DroneBusinessObject {
             return 999999;
         }
 
-        return CellController.getInstance().calculeteDistanceFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
+        return CellController.getInstance().calculeteDisplacementFrom(initialRowPosition, initialCollunmPosition, finalRowPosition, finalCollunmPosition);
     }
 
 

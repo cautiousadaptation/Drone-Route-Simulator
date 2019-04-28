@@ -1,3 +1,4 @@
+/*
 package wrappers.trash;
 
 import controller.*;
@@ -7,7 +8,6 @@ import javafx.scene.image.ImageView;
 import model.entity.boat.Boat;
 import model.entity.boat.BoatBusinessObject;
 import model.entity.drone.Drone;
-import model.entity.boat.Boat;
 import model.entity.drone.DroneBusinessObject;
 import org.aspectj.lang.JoinPoint;
 import util.StopWatch;
@@ -252,7 +252,7 @@ public aspect Wrapper7 {
 
             if(boat.isShitDown()){
 
-                double tempDistance = cellController.calculeteDistanceFrom(boatView, droneView);
+                double tempDistance = cellController.calculeteDisplacementFrom(boatView, droneView);
 
                 if (tempDistance < closerDistance) {
                     closerDistance = tempDistance;
@@ -262,7 +262,7 @@ public aspect Wrapper7 {
 
         }
 
-        if(closerBoatView != null && CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(),
+        if(closerBoatView != null && CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(),
                 closerBoatView.getCurrentCellView()) <= 150){
             return closerBoatView;
         }
@@ -288,7 +288,7 @@ public aspect Wrapper7 {
             public void task() {
                 Platform.runLater(() -> {
 
-                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
+                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
                         // boat catch drone
                         droneView.getCurrentCellView().getChildren().remove(droneView);
                         System.out.println("Boat[" + boatView.getBoatLabel() + "] " + " Recovered Drone ["+drone.getLabel()+"]");
@@ -329,7 +329,7 @@ public aspect Wrapper7 {
 
             @Override
             public boolean conditionStop() {
-                if (CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
+                if (CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
 
                     dronesAreOnBoatInSet.remove(drone);
 
@@ -371,7 +371,7 @@ public aspect Wrapper7 {
 
             @Override
             public boolean conditionStop() {
-                if(CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(),
+                if(CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(),
                         CellController.getInstance().getCellViewFrom(boat.getSourceCell()))==0){
                     boatInSoSInSet.remove(boat);
                     BoatBusinessObject.shutDown(boat);
@@ -395,7 +395,7 @@ public aspect Wrapper7 {
                 continue;
             }
 
-            double tempDistance = cellController.calculeteDistanceFrom(riverView, cellView);
+            double tempDistance = cellController.calculeteDisplacementFrom(riverView, cellView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;
@@ -417,3 +417,4 @@ public aspect Wrapper7 {
     }
 
 }
+*/

@@ -15,10 +15,7 @@ import view.boat.BoatView;
 import view.drone.DroneView;
 import view.river.RiverView;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public aspect Wrapper3 {
     pointcut safeLanding(): call (* model.entity.drone.DroneBusinessObject.safeLanding(*));
@@ -32,13 +29,17 @@ public aspect Wrapper3 {
     pointcut navigate() : call (void controller.BoatAutomaticController.navigate(*));
 
     //todo esses wrappers não foram testados para vários drones no mesmo ambiente
-    private static Set<Drone> dronesAreOnBoatInSet = new HashSet<>();
+   // private static Set<Drone> dronesAreOnBoatInSet = new HashSet<>();
     private static Set<Drone> dronesAreWaitBoatInSet = new HashSet<>();
     private static Set<Drone> isGlideSet = new HashSet<>();
-    private static Map<Drone, RiverView> lastCloserRiverViewInMap= new HashMap<>();
+   // private static Map<Drone, RiverView> lastCloserRiverViewInMap= new HashMap<>();
     private static boolean reset = false;
     private static Set<Boat>  boatInSoSInSet = new HashSet<>();
     private static ImageView imageViewDrone;
+
+    private static Map<BoatView, DroneView> boatGoingToDestinyMap = new HashMap<>();
+    private static Set<BoatView> boatGoingToSourceSet = new HashSet<>();
+
 
 
     before(): safeLanding()
@@ -138,7 +139,7 @@ public aspect Wrapper3 {
             &&(
             (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
             ||
-            (dronesAreOnBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
+            (boatGoingToSourceSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
             )
             )
             {
@@ -267,7 +268,7 @@ public aspect Wrapper3 {
 
             if(boat.isShitDown()){
 
-                double tempDistance = cellController.calculeteDistanceFrom(boatView, droneView);
+                double tempDistance = cellController.calculeteDisplacementFrom(boatView, droneView);
 
                 if (tempDistance < closerDistance) {
                     closerDistance = tempDistance;
@@ -277,7 +278,7 @@ public aspect Wrapper3 {
 
         }
 
-        if(closerBoatView != null && CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(),
+        if(closerBoatView != null && CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(),
                 closerBoatView.getCurrentCellView()) <= 150){
             return closerBoatView;
         }
@@ -293,9 +294,72 @@ public aspect Wrapper3 {
 
         Drone drone = DroneController.getInstance().getDroneFrom(droneView.getUniqueID());
 
-        CellView destinyCellView = CellController.getInstance().getCellViewFrom(drone.getDestinyCell().getUniqueID());
+        CellView droneCellView = CellController.getInstance().getCellViewFrom(drone.getCurrentPositionI(), drone.getCurrentPositionJ());
+
+        BoatBusinessObject.generateRoute(boatView, droneCellView);
+
+        StopWatch goDroneStopWatch = new StopWatch(0, 1000) {
+            @Override
+            public void task() {
+                if(!boatGoingToDestinyMap.containsKey(boatView)){
+                    System.out.println("Go boat->Drone");
+                    int currentIndex = boat.getRoute().indexOf(boatView.getCurrentCellView());
+
+                    if(currentIndex+1<=boat.getRoute().size()-1){
+                        CellView nextCellView = boat.getRoute().get(currentIndex+1);
+
+                        boat.setCurrentRowPosition(nextCellView.getRowPosition());
+                        boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
+
+                    }
+                }
 
 
+            }
+
+            @Override
+            public boolean conditionStop() {
+                if(CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30){
+                    Platform.runLater(() -> {
+                        droneView.getCurrentCellView().getChildren().remove(droneView);
+                        DroneBusinessObject.landing(drone);
+                        DroneBusinessObject.landed(drone);
+                        DroneBusinessObject.shutDown(drone);
+                       // dronesAreOnBoatInSet.add(drone);
+                        dronesAreWaitBoatInSet.remove(drone);
+                        imageViewDrone = new ImageView(new Image("/view/res/notSelectedDrone.png"));
+                        imageViewDrone.setScaleX(0.9);
+                        imageViewDrone.setScaleY(0.9);
+
+                        boatView.getChildren().add(imageViewDrone);
+                    });
+
+                        BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(drone.getDestinyCell()));
+                        boatGoingToDestinyMap.put(boatView, droneView);
+
+
+
+
+
+
+                    return true;
+                }
+
+                return false;
+            }
+        };
+
+
+        goDestinyDrone(boatView, drone);
+
+        returnToHome(boatView);
+
+
+
+
+
+
+/*
         new StopWatch(0, 1000) {
 
 
@@ -303,7 +367,7 @@ public aspect Wrapper3 {
             public void task() {
                 Platform.runLater(() -> {
 
-                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
+                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
                         // boat catch drone
                         droneView.getCurrentCellView().getChildren().remove(droneView);
                         System.out.println("Boat[" + boatView.getBoatLabel() + "] " + " Recovered Drone ["+drone.getLabel()+"]");
@@ -344,7 +408,7 @@ public aspect Wrapper3 {
 
             @Override
             public boolean conditionStop() {
-                if (CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
+                if (CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
 
                     dronesAreOnBoatInSet.remove(drone);
 
@@ -367,9 +431,120 @@ public aspect Wrapper3 {
                 return false;
             }
 
-        };
+        };*/
     }
 
+    private void goDestinyDrone(BoatView boatView, Drone drone) {
+
+
+        Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
+        DroneView droneView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID());
+
+        StopWatch goDestinyDroneStopWatch = new StopWatch(0, 1000) {
+            @Override
+            public void task() {
+
+                if(boatGoingToDestinyMap.containsKey(boatView)){
+                    System.out.println("Go boat->destiny");
+                    int currentIndex = boat.getRoute().indexOf(boatView.getCurrentCellView());
+
+                    if(currentIndex+1<=boat.getRoute().size()-1){
+                        CellView nextCellView = boat.getRoute().get(currentIndex+1);
+
+                        Platform.runLater(() -> {
+                            boat.setCurrentRowPosition(nextCellView.getRowPosition());
+                            boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
+                        });
+
+                    }
+                }
+
+            }
+
+            @Override
+            public boolean conditionStop() {
+
+                if(boatGoingToDestinyMap.containsKey(boatView) &&
+                        CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(),
+                        CellController.getInstance().getCellViewFrom(drone.getDestinyCell())) == 30){
+
+
+                    System.out.println("Drone[" + drone.getLabel() + "] " + "Arrived at Destination");
+                    LoggerController.getInstance().print("Drone[" + drone.getLabel() + "] " + " Arrived at Destination");
+                    Platform.runLater(() -> boatView.getChildren().remove(imageViewDrone));
+
+                    boatGoingToDestinyMap.remove(boatView);
+
+
+
+                    CellView srcCellView = CellController.getInstance().getCellViewFrom(boat.getSourceCell());
+                    BoatBusinessObject.generateRoute(boatView, srcCellView);
+
+                    boatGoingToSourceSet.add(boatView);
+
+                    return true;
+
+                }
+
+                return false;
+            }
+        };
+
+    }
+
+    private void returnToHome(BoatView boatView) {
+        Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
+
+
+        StopWatch goSourceDroneStopWatch = new StopWatch(0, 1000) {
+            @Override
+            public void task() {
+
+                if(boatGoingToSourceSet.contains(boatView)){
+                    System.out.println("Go boat->src");
+                int currentIndex = boat.getRoute().indexOf(boatView.getCurrentCellView());
+
+                if(currentIndex+1<=boat.getRoute().size()-1){
+                    CellView nextCellView = boat.getRoute().get(currentIndex+1);
+
+                    Platform.runLater(() -> {
+                        System.out.println("next cellView: "+nextCellView.getRowPosition()+",,"+nextCellView.getCollunmPosition());
+                        boat.setCurrentRowPosition(nextCellView.getRowPosition());
+                        boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
+                    });
+                }
+                }
+            }
+
+            @Override
+            public boolean conditionStop() {
+                if(boatGoingToSourceSet.contains(boatView) &&
+                        CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(),
+                        CellController.getInstance().getCellViewFrom(boat.getSourceCell())) == 0){
+
+                    boatInSoSInSet.remove(boat);
+                    BoatBusinessObject.shutDown(boat);
+
+                    System.out.println("é falso");
+
+                    try {
+                        Thread.sleep(1000);
+                        boatGoingToSourceSet.remove(boatView);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    return true;
+
+                }
+
+                return false;
+            }
+        };
+
+    }
+
+/*
     private void goSourceBoat(Boat boat) {
         BoatView boatView = BoatAutomaticController.getInstance().getBoatViewFrom(boat.getUniqueID());
 
@@ -386,7 +561,7 @@ public aspect Wrapper3 {
 
             @Override
             public boolean conditionStop() {
-                if(CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(),
+                if(CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(),
                         CellController.getInstance().getCellViewFrom(boat.getSourceCell()))==0){
                     boatInSoSInSet.remove(boat);
                     BoatBusinessObject.shutDown(boat);
@@ -397,8 +572,9 @@ public aspect Wrapper3 {
             }
         };
     }
+*/
 
-
+/*
     private RiverView getCloserRiverView(Drone drone, CellView cellView) {
         CellController cellController = CellController.getInstance();
         RiverView closerRiverView = null;
@@ -410,7 +586,7 @@ public aspect Wrapper3 {
                 continue;
             }
 
-            double tempDistance = cellController.calculeteDistanceFrom(riverView, cellView);
+            double tempDistance = cellController.calculeteDisplacementFrom(riverView, cellView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;
@@ -420,7 +596,7 @@ public aspect Wrapper3 {
 
 
         return closerRiverView;
-    }
+    }*/
 
 
 

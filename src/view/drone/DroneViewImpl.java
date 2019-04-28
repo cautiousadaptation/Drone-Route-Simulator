@@ -48,8 +48,8 @@ public class DroneViewImpl extends DroneView {
         this.currentCellView = currentCellView;
 
 
-      /*  double distanceHospitalSource = calculeteDistanceFrom(drone.getSourceHospital());
-        double distanceHospitalDestiny = calculeteDistanceFrom(drone.getDestinyHopistal());
+      /*  double distanceHospitalSource = calculeteDisplacementFrom(drone.getSourceHospital());
+        double distanceHospitalDestiny = calculeteDisplacementFrom(drone.getDestinyHopistal());
 
 
         drone.setDistanceSource(distanceHospitalSource);

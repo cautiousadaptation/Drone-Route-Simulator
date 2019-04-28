@@ -1,3 +1,4 @@
+/*
 package wrappers.trash;
 
 import controller.*;
@@ -234,7 +235,7 @@ public aspect Wrapper8 {
         BoatView closerBoatView = null;
 
         for (BoatView boatView : boatAutomaticController.getBoatViewMap().values()) {
-            double tempDistance = cellController.calculeteDistanceFrom(boatView, droneView);
+            double tempDistance = cellController.calculeteDisplacementFrom(boatView, droneView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;
@@ -242,7 +243,7 @@ public aspect Wrapper8 {
             }
         }
 
-        if(((CellController.getInstance()).calculeteDistanceFrom(droneView.getCurrentCellView(),
+        if(((CellController.getInstance()).calculeteDisplacementFrom(droneView.getCurrentCellView(),
                 closerBoatView.getCurrentCellView())) > 150){
             return null;
         }
@@ -263,7 +264,7 @@ public aspect Wrapper8 {
             public void task() {
                 Platform.runLater(() -> {
 
-                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDistanceFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
+                    if (!dronesAreOnBoatInSet.contains(drone) && CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30) {
                         // boat catch drone
                         droneView.getCurrentCellView().getChildren().remove(droneView);
                         System.out.println("Boat[" + boatView.getBoatLabel() + "] " + " Recovered Drone ["+drone.getLabel()+"]");
@@ -298,7 +299,7 @@ public aspect Wrapper8 {
 
             @Override
             public boolean conditionStop() {
-                if (CellController.getInstance().calculeteDistanceFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
+                if (CellController.getInstance().calculeteDisplacementFrom(boatView.getCurrentCellView(), destinyCellView) == 30) {
 
                     dronesAreOnBoatInSet.remove(drone);
                     System.out.println("Drone[" + drone.getLabel() + "] " + "Arrived at Destination");
@@ -331,7 +332,7 @@ public aspect Wrapper8 {
                 continue;
             }
 
-            double tempDistance = cellController.calculeteDistanceFrom(riverView, cellView);
+            double tempDistance = cellController.calculeteDisplacementFrom(riverView, cellView);
 
             if (tempDistance < closerDistance) {
                 closerDistance = tempDistance;
@@ -353,3 +354,4 @@ public aspect Wrapper8 {
     }
 
 }
+*/
