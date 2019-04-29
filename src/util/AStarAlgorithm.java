@@ -22,7 +22,7 @@ public class AStarAlgorithm {
         Node currentNode = graph.get(0);
         openMap.put(currentNode.getKey(), currentNode);
 
-        while (currentNode.getDistanceTraveledToTheDestiny()!=0 /*!openList.isEmpty()*/){
+        while (currentNode.getDistanceTraveledToTheDestiny()>30 /*!openList.isEmpty()*/){
 
             Node bestNode = getBestNodeIn(new ArrayList<>(openMap.values()));
 
@@ -46,9 +46,9 @@ public class AStarAlgorithm {
 
             closeList.put(currentNode.getKey(),currentNode);
 
-            if(openMap.isEmpty()){
+            /*if(openMap.isEmpty()){
                 break;
-            }
+            }*/
 
 
         }
