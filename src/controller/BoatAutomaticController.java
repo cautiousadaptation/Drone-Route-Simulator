@@ -125,7 +125,7 @@ public class BoatAutomaticController {
                             BoatView boatView = BoatAutomaticController.getInstance().getBoatViewFrom(boat.getUniqueID());
                             CellView destinyCellView = CellController.getInstance().getCellViewFrom(boat.getDestinyCell());
 
-                            BoatBusinessObject.generateRoute(boatView, destinyCellView);
+                            BoatBusinessObject.generateRoute(boatView, destinyCellView, 0);
 
                         }
 
@@ -136,7 +136,6 @@ public class BoatAutomaticController {
 
             @Override
             public boolean conditionStop() {
-
                 return mustStopAlertNavigateStopWatch;
             }
         };
@@ -175,7 +174,7 @@ public class BoatAutomaticController {
                 BoatBusinessObject.returnToHome(boat);
                 BoatBusinessObject.shortage(boat);
 
-                BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(boat.getSourceCell()));
+                BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(boat.getSourceCell()),0);
 
 
 

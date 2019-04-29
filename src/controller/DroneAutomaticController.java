@@ -117,6 +117,7 @@ public class DroneAutomaticController extends DroneController {
         for (Drone drone : droneMap.values()) {
             DroneBusinessObject.notifyStopEnviroment(drone);
 
+
         }
     }
 
@@ -314,6 +315,7 @@ public class DroneAutomaticController extends DroneController {
         if(drone.isReturningToHome()){
             //go to source hospital (return to home)
              hopitalCellView = CellController.getInstance().getCellViewFrom(drone.getSourceCell());
+            
         }else {
             //go to destiny hospital (to go destiny)
             hopitalCellView = CellController.getInstance().getCellViewFrom(drone.getDestinyCell());

@@ -9,7 +9,7 @@ import java.util.*;
 
 public class AStarAlgorithm {
 
-    public static List<CellView> buildRoute(CellView sourceCellView, CellView destinyCellView ) {
+    public static List<CellView> buildRoute(CellView sourceCellView, CellView destinyCellView, double distanceMaxFromDestine ) {
         List<Node> graph = new LinkedList<>();
         Map<String,Node> openMap = new HashMap<>();
         Map<String,Node> closeList = new HashMap<>();
@@ -22,7 +22,7 @@ public class AStarAlgorithm {
         Node currentNode = graph.get(0);
         openMap.put(currentNode.getKey(), currentNode);
 
-        while (currentNode.getDistanceTraveledToTheDestiny()>30 /*!openList.isEmpty()*/){
+        while (currentNode.getDistanceTraveledToTheDestiny()>distanceMaxFromDestine /*!openList.isEmpty()*/){
 
             Node bestNode = getBestNodeIn(new ArrayList<>(openMap.values()));
 

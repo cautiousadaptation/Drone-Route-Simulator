@@ -81,7 +81,7 @@ public class AntennaController {
                         Random random = new Random();
                         double randomDouble = random.nextDouble();
 
-                        if(randomDouble>0.85){
+                        if(randomDouble>/*0.85*/0){
                             EnvironmentController.getInstance().notifyBadConnection(antennaView.getCurrentCellView());
 
                         }else {

@@ -23,6 +23,7 @@ public aspect Wrapper3 {
     pointcut updateBatteryPerSecond(): call (* model.entity.drone.DroneBusinessObject.updateBatteryPerSecond(*));
     pointcut landing(): call (* model.entity.drone.DroneBusinessObject.landing(*));
     pointcut resetSettingsDrone(): call (void model.entity.drone.DroneBusinessObject.resetSettingsDrone(*));
+    pointcut consumeRunEnviroment(): call (void controller.DroneController.consumeRunEnviroment());
     pointcut goDestinyAutomatic(): call (void controller.DroneAutomaticController.goDestinyAutomatic(*));
     //tirar esse pointcut, eu só deixei para fazer o around do eco. mode para eu não precisar remover esse do cod. do drone
     pointcut applyEconomyMode() : call (void model.entity.drone.DroneBusinessObject.applyEconomyMode(*));
@@ -35,7 +36,7 @@ public aspect Wrapper3 {
    // private static Map<Drone, RiverView> lastCloserRiverViewInMap= new HashMap<>();
     private static boolean reset = false;
     private static Set<Boat>  boatInSoSInSet = new HashSet<>();
-    private static ImageView imageViewDrone;
+    private static ImageView imageViewDrone = new ImageView(new Image("/view/res/notSelectedDrone.png"));
 
     private static Map<BoatView, DroneView> boatGoingToDestinyMap = new HashMap<>();
     private static Set<BoatView> boatGoingToSourceSet = new HashSet<>();
@@ -136,15 +137,50 @@ public aspect Wrapper3 {
             &&
             if(
             (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 3)
-            &&(
-            (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
-            ||
-            (boatGoingToSourceSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
-            )
+//            &&(
+//            (dronesAreWaitBoatInSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
+//            ||
+//            (boatGoingToSourceSet.contains(((Drone)thisJoinPoint.getArgs()[0])) == true)
+//            )
             )
             {
+                System.out.println("RESET");
                 reset = true;
+
+                if(dronesAreWaitBoatInSet.size()>0)
+                dronesAreWaitBoatInSet.clear();
+                if(isGlideSet.size()>0)
+                isGlideSet.clear();
+                if(boatInSoSInSet.size()>0)
+                boatInSoSInSet.clear();
+                if(boatGoingToDestinyMap.size()>0)
+                boatGoingToDestinyMap.clear();
+                if(boatGoingToSourceSet.size()>0)
+                boatGoingToSourceSet.clear();
+
+
+
+
+                for(BoatView boatView: BoatAutomaticController.getInstance().getBoatViewMap().values()){
+                    Platform.runLater(() -> {
+                        if(boatView.getChildren().contains(imageViewDrone)) {
+                            boatView.getChildren().remove(imageViewDrone);
+                        }
+
+                    });
+                }
+
+
+
             }
+
+    after(): consumeRunEnviroment()
+            {
+                reset = false;
+            }
+
+
+
 
 
     void around(): returnToHome()
@@ -296,7 +332,7 @@ public aspect Wrapper3 {
 
         CellView droneCellView = CellController.getInstance().getCellViewFrom(drone.getCurrentPositionI(), drone.getCurrentPositionJ());
 
-        BoatBusinessObject.generateRoute(boatView, droneCellView);
+        BoatBusinessObject.generateRoute(boatView, droneCellView,0);
 
         StopWatch goDroneStopWatch = new StopWatch(0, 1000) {
             @Override
@@ -330,14 +366,13 @@ public aspect Wrapper3 {
                         DroneBusinessObject.shutDown(drone);
                        // dronesAreOnBoatInSet.add(drone);
                         dronesAreWaitBoatInSet.remove(drone);
-                        imageViewDrone = new ImageView(new Image("/view/res/notSelectedDrone.png"));
                         imageViewDrone.setScaleX(0.9);
                         imageViewDrone.setScaleY(0.9);
 
                         boatView.getChildren().add(imageViewDrone);
                     });
 
-                        BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(drone.getDestinyCell()));
+                        BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(drone.getDestinyCell()),30);
                         boatGoingToDestinyMap.put(boatView, droneView);
 
 
@@ -345,6 +380,10 @@ public aspect Wrapper3 {
 
 
 
+                    return true;
+                }
+
+                if(reset){
                     return true;
                 }
 
@@ -481,12 +520,16 @@ public aspect Wrapper3 {
 
 
                     CellView srcCellView = CellController.getInstance().getCellViewFrom(boat.getSourceCell());
-                    BoatBusinessObject.generateRoute(boatView, srcCellView);
+                    BoatBusinessObject.generateRoute(boatView, srcCellView, 0);
 
                     boatGoingToSourceSet.add(boatView);
 
                     return true;
 
+                }
+
+                if(reset){
+                    return true;
                 }
 
                 return false;
@@ -539,6 +582,10 @@ public aspect Wrapper3 {
 
                     return true;
 
+                }
+
+                if(reset){
+                    return true;
                 }
 
                 return false;

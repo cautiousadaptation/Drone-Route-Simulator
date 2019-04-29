@@ -648,38 +648,9 @@ public class DroneBusinessObject {
         }
 
         drone.setReturningToHome(true);
+        System.out.println("Return to Home inicio" + Thread.currentThread().getName());
 
-        returnToHomeStopWatch = new StopWatch(0, 1000) {
-            @Override
-            public void task() {
-                Platform.runLater(() -> {
-                    System.out.println("Return to Home inicio" + Thread.currentThread().getName());
-                    String mustGO = null;
-                    CellView cellView = null;
 
-                    CellView droneCellView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID()).getCurrentCellView();
-                    if(drone.isReturningToHome()){
-                        //go to source  (return to home)
-                        cellView = CellController.getInstance().getCellViewFrom(drone.getSourceCell());
-                    }else {
-                        //go to destiny  (to go destiny)
-                        cellView = CellController.getInstance().getCellViewFrom(drone.getDestinyCell());
-                    }
-
-                    mustGO = closeDirection(droneCellView, cellView);
-
-                    DroneBusinessObject.getInstance().goTo(drone, mustGO);
-                    checkStatus(drone);
-                    updateDistances(drone);
-
-                });
-            }
-
-            @Override
-            public boolean conditionStop() {
-                return mustStopReturnToHomeStopWatch;
-            }
-        };
 
 //      Runnable runnable = () -> Platform.runLater(() -> {
 //          System.out.println("Return to Home inicio"+ Thread.currentThread().getName() );
@@ -753,6 +724,122 @@ public class DroneBusinessObject {
 
 
     }
+
+
+//    public static void returnToHome(Drone drone) {
+//
+//        if(drone.isManual()){
+//            /*This functionality is implemented within the DroneAutomaticController so when is automatic drone this methed dont need executed here*/
+//            return;
+//        }
+//
+//        drone.setReturningToHome(true);
+//        System.out.println("Return to Home inicio" + Thread.currentThread().getName());
+//
+//        returnToHomeStopWatch = new StopWatch(0, 1000) {
+//            @Override
+//            public void task() {
+//                Platform.runLater(() -> {
+//                    String mustGO = null;
+//                    CellView cellView = null;
+//
+//                    CellView droneCellView = DroneController.getInstance().getDroneViewFrom(drone.getUniqueID()).getCurrentCellView();
+//                    if(drone.isReturningToHome()){
+//                        //go to source  (return to home)
+//                        cellView = CellController.getInstance().getCellViewFrom(drone.getSourceCell());
+//                    }else {
+//                        //go to destiny  (to go destiny)
+//                        cellView = CellController.getInstance().getCellViewFrom(drone.getDestinyCell());
+//                    }
+//
+//                    mustGO = closeDirection(droneCellView, cellView);
+//
+//                    DroneBusinessObject.getInstance().goTo(drone, mustGO);
+//                    updateDistances(drone);
+//                    checkStatus(drone);
+//
+//
+//                });
+//            }
+//
+//            @Override
+//            public boolean conditionStop() {
+//                return mustStopReturnToHomeStopWatch;
+//            }
+//        };
+//
+////      Runnable runnable = () -> Platform.runLater(() -> {
+////          System.out.println("Return to Home inicio"+ Thread.currentThread().getName() );
+////          int oldI = selectedDrone.getCurrentPositionI();
+////          int oldJ = selectedDrone.getCurrentPositionJ();
+////          double newDistanceSource = 999999;
+////          String mustGO = null;
+////
+////          double tempDistance = distanceDroneWentRight(selectedDrone, selectedDrone.getSourceHospital());
+////
+////          if(tempDistance < newDistanceSource){
+////              newDistanceSource = tempDistance;
+////              mustGO ="->";
+////          }
+////
+////          selectedDrone.setCurrentPositionI(oldI);
+////          selectedDrone.setCurrentPositionJ(oldJ);
+////
+////          tempDistance = distanceDroneWentLeft(selectedDrone, selectedDrone.getSourceHospital());
+////
+////          if(tempDistance<newDistanceSource){
+////              newDistanceSource = tempDistance;
+////              mustGO ="<-";
+////          }
+////
+////          selectedDrone.setCurrentPositionI(oldI);
+////          selectedDrone.setCurrentPositionJ(oldJ);
+////
+////          tempDistance = distanceDroneWentUp(selectedDrone, selectedDrone.getSourceHospital());
+////
+////          if(tempDistance<newDistanceSource){
+////              newDistanceSource = tempDistance;
+////              mustGO ="/\\";
+////
+////          }
+////
+////          selectedDrone.setCurrentPositionI(oldI);
+////          selectedDrone.setCurrentPositionJ(oldJ);
+////
+////          tempDistance = distanceDroneWentDown(selectedDrone, selectedDrone.getSourceHospital());
+////
+////          if(tempDistance<newDistanceSource){
+////              newDistanceSource = tempDistance;
+////              mustGO ="\\/";
+////
+////          }
+////
+////          selectedDrone.setCurrentPositionI(oldI);
+////          selectedDrone.setCurrentPositionJ(oldJ);
+////
+////
+////          goTo(selectedDrone, mustGO);
+////
+////          checkStatus(selectedDrone);
+////          updateDistances(selectedDrone);
+////          //updateItIsOver(selectedDrone);
+////
+////         /* //apply bad connection if cell is bad connection
+////          CellView cellView = EnvironmentController.getInstance().getCurrentCellView();
+////
+////          if(CellController.getInstance().getCellFrom(cellView).getBadConnection()){
+////              setBadConnection(selectedDrone);
+////          }else {
+////              setNormalConnection(selectedDrone);
+////          }*/
+////          System.out.println("Return to Home fim" + Thread.currentThread().getName());
+////      });
+////
+////        returnToHomeStopWatch = new StopWatch(0,1000, runnable);
+////        returnToHomeStopWatch.start();
+//
+//
+//    }
 
     public static String closeDirection(CellView srcCellView, CellView dstCellView) {
         double newDistanceSource = 999999;

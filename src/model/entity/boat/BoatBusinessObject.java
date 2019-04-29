@@ -251,6 +251,7 @@ public abstract class BoatBusinessObject {
         boat.setStarted(false);
         boat.setReturnToHome(false);
         boat.stocked(false);
+        updateDistances(boat);
 
     }
 
@@ -301,9 +302,9 @@ public abstract class BoatBusinessObject {
 
     }
 
-    public static void generateRoute(BoatView boatView, CellView dstCellView){
+    public static void generateRoute(BoatView boatView, CellView dstCellView, double distanceMaxFromDestine){
         Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
-        boat.setRoute(AStarAlgorithm.buildRoute(boatView.getCurrentCellView(), dstCellView));
+        boat.setRoute(AStarAlgorithm.buildRoute(boatView.getCurrentCellView(), dstCellView, distanceMaxFromDestine));
 
     }
 
