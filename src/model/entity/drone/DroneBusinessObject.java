@@ -206,7 +206,9 @@ public class DroneBusinessObject {
         }
 
         if (selectedDrone.isBadConnection()
-                && !selectedDrone.isReturningToHome()) {
+                && !selectedDrone.isReturningToHome()
+                && selectedDrone.getCurrentBattery()>10 // da prioridade ao sefaland
+                ) {
 
 
             returnToHome(selectedDrone);

@@ -307,9 +307,11 @@ public aspect Wrapper3 {
 
                     if(currentIndex+1<=boat.getRoute().size()-1){
                         CellView nextCellView = boat.getRoute().get(currentIndex+1);
+                        Platform.runLater(() -> {
+                            boat.setCurrentRowPosition(nextCellView.getRowPosition());
+                            boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
+                        });
 
-                        boat.setCurrentRowPosition(nextCellView.getRowPosition());
-                        boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
 
                     }
                 }
@@ -319,6 +321,7 @@ public aspect Wrapper3 {
 
             @Override
             public boolean conditionStop() {
+                System.out.println("distance: "+CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()));
                 if(CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30){
                     Platform.runLater(() -> {
                         droneView.getCurrentCellView().getChildren().remove(droneView);

@@ -111,7 +111,7 @@ public class BoatAutomaticController {
                         Random random = new Random();
                         double randomDouble = random.nextDouble();
 
-                        if(randomDouble>0.6){
+                        if(randomDouble>1){
                         Platform.runLater(() -> {
                             BoatBusinessObject.notifyRunEnviroment(boat);
 
