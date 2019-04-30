@@ -66,16 +66,24 @@ public aspect Wrapper3 {
 
 
 
-    boolean around(): safeLanding()
+        boolean around(): safeLanding()
             &&
             if
-                    (
-            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() <=60)
+            (
+            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 3)
             &&
             (((Drone)thisJoinPoint.getArgs()[0]).isStrongWind())
             &&
-            (((Drone)thisJoinPoint.getArgs()[0]).getWrapperId() == 3)
+            (((Drone)thisJoinPoint.getArgs()[0]).getDistanceDestiny() <=60)
+            &&
+            ((getCloserBoatFromDrone(thisJoinPoint)) == null)
             ){
+
+        keepFlying(thisJoinPoint);
+
+        return false;
+    }
+
 
         keepFlying(thisJoinPoint);
 
