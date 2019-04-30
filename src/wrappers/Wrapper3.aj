@@ -13,7 +13,6 @@ import util.StopWatch;
 import view.CellView;
 import view.boat.BoatView;
 import view.drone.DroneView;
-import view.river.RiverView;
 
 import java.util.*;
 
@@ -299,10 +298,9 @@ public aspect Wrapper3 {
         Double closerDistance = 99999999D;
         BoatView closerBoatView = null;
 
-        for (BoatView boatView : boatAutomaticController.getBoatViewMap().values()) {
-            Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
+        for (Boat boat : boatAutomaticController.getEnableBoatList()) {
 
-            if(boat.isShitDown()){
+            BoatView boatView = BoatAutomaticController.getInstance().getBoatViewFrom(boat.getUniqueID());
 
                 double tempDistance = cellController.calculeteDisplacementFrom(boatView, droneView);
 
@@ -310,7 +308,7 @@ public aspect Wrapper3 {
                     closerDistance = tempDistance;
                     closerBoatView = boatView;
                 }
-            }
+
 
         }
 
@@ -358,7 +356,7 @@ public aspect Wrapper3 {
             @Override
             public boolean conditionStop() {
                 System.out.println("distance: "+CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()));
-                if(CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) == 30){
+                if(CellController.getInstance().calculeteDisplacementFrom(droneView.getCurrentCellView(), boatView.getCurrentCellView()) <= 30){
                     Platform.runLater(() -> {
                         droneView.getCurrentCellView().getChildren().remove(droneView);
                         DroneBusinessObject.landing(drone);
@@ -571,7 +569,6 @@ public aspect Wrapper3 {
                     boatInSoSInSet.remove(boat);
                     BoatBusinessObject.shutDown(boat);
 
-                    System.out.println("é falso");
 
                     try {
                         Thread.sleep(1000);

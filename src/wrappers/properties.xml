@@ -45,6 +45,12 @@
                     description="Para de entregar o produto para ajudar o Drone"
                     class-name-settings-controller ="BoatSettingsPanelController"/>
 
+    <WrapperElement name-file-aj="Wrapper4"
+                    id="7" name-shown-panel="Boat Exclusive"
+                    color="#000000"
+                    description="Boat apenas para servir o drone"
+                    class-name-settings-controller ="BoatSettingsPanelController"/>
+
 
 
 </WrapperElements>

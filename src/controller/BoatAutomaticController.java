@@ -111,7 +111,7 @@ public class BoatAutomaticController {
                         Random random = new Random();
                         double randomDouble = random.nextDouble();
 
-                        if(randomDouble>0.6){
+                        if(randomDouble>0.0){
                         Platform.runLater(() -> {
                             BoatBusinessObject.notifyRunEnviroment(boat);
 
@@ -201,6 +201,9 @@ public class BoatAutomaticController {
 
 
 
+
+
+
          /*   if(boat.isReturnToHome()){
                 CellView cellView = CellController.getInstance().getCellViewFrom(boat.getSourceCell());
                 goDestinyAutomatic(boatView, cellView);
@@ -217,6 +220,21 @@ public class BoatAutomaticController {
 
 
 
+    }
+
+    public List<Boat> getEnableBoatList(){
+        List<Boat> enableboatList = new ArrayList<>();
+        for(Boat boat : boatMap.values()){
+            if(isEnable(boat)){
+                enableboatList.add(boat);
+            }
+        }
+
+        return enableboatList;
+    }
+
+    public boolean isEnable(Boat boat){
+        return boat.isShitDown();
     }
 
 
