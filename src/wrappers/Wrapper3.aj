@@ -288,7 +288,7 @@ public aspect Wrapper3 {
 
     }
 
-    private static BoatView getCloserBoatFromDrone(JoinPoint thisJoinPoint) {
+    public static BoatView getCloserBoatFromDrone(JoinPoint thisJoinPoint) {
 
         Drone drone = (Drone) thisJoinPoint.getArgs()[0];
 

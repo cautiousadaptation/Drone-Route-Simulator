@@ -26,6 +26,7 @@ public class Boat extends Entity {
     private boolean returnToHome = false;
     private boolean stocked = false;
     private List<CellView> route = new ArrayList<>();
+    private int wrapperId = 5;
 
 
     public Boat(String uniqueID, String label, Cell sourceCell) {
@@ -79,6 +80,23 @@ public class Boat extends Entity {
 
     public List<CellView> getRoute() {
         return route;
+    }
+
+    public int getWrapperId() {
+        return this.wrapperId;
+    }
+
+    public void setWrapperId(int wrapperId) {
+        int oldValue = this.wrapperId;
+        int newValue = wrapperId;
+
+        if(oldValue == newValue){
+            return;
+        }
+
+        this.wrapperId = wrapperId;
+
+        notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
     }
 
     public interface Listener {

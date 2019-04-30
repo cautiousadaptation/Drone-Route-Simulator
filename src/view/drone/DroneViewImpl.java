@@ -94,8 +94,6 @@ public class DroneViewImpl extends DroneView {
         }
 
 
-        // System.out.println((drone.getCurrentPositionI()+" "+drone.getCurrentPositionJ()));
-        /*System.out.println("updade position");*/
         CellView newCellView = CellController.getInstance().getCellViewFrom(drone.getCurrentPositionI(), drone.getCurrentPositionJ());
         currentCellView = newCellView;
 
@@ -247,7 +245,6 @@ public class DroneViewImpl extends DroneView {
 
             applyStyleStarted();
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Start");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Start");
 
             return;
@@ -257,7 +254,6 @@ public class DroneViewImpl extends DroneView {
 
             applyStyleShutDown();
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Shutdown");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Shutdown");
 
             return;
@@ -267,7 +263,6 @@ public class DroneViewImpl extends DroneView {
 
             applyStyleTakeOff();
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Take Off");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Take Off");
 
             return;
@@ -277,7 +272,6 @@ public class DroneViewImpl extends DroneView {
 
             applyStyleLanded();
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Landed");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Landed");
 
             return;
@@ -285,8 +279,6 @@ public class DroneViewImpl extends DroneView {
 
         if (methodName.equals("setLanding") && !((Boolean) oldValue) && (Boolean) newValue) {
 
-
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Landing");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Landing");
 
             return;
@@ -295,7 +287,6 @@ public class DroneViewImpl extends DroneView {
 
         if (methodName.equals("setIsSafeland") && !((Boolean) oldValue) && (Boolean) newValue) {
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "SafeLand");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "SafeLand");
 
 
@@ -310,10 +301,7 @@ public class DroneViewImpl extends DroneView {
             // updateItIsOver(drone);
             DroneBusinessObject.updateItIsOver(drone);
 
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
 
-            System.out.println("Atualização da posição: " +dtf.format(now));
 
 
             return;
@@ -321,7 +309,7 @@ public class DroneViewImpl extends DroneView {
 
         if (methodName.equals("setCurrentBattery")
                 && ((Double) oldValue).intValue() != ((Double) newValue).intValue()) {
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Current battery: " + drone.getCurrentBattery() + "%");
+
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Current battery: " + drone.getCurrentBattery() + "%");
 
             return;
@@ -330,7 +318,7 @@ public class DroneViewImpl extends DroneView {
         if (methodName.equals("setBadConnection")
                 && !((Boolean) oldValue) && (Boolean) newValue) {
             applyStyleBadConnection();
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Bad Connection");
+
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Bad Connection");
 
         }
@@ -343,7 +331,7 @@ public class DroneViewImpl extends DroneView {
             }
 
             applyStyleNormalConnection();
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Normal Connection");
+
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Normal Connection");
 
             return;
@@ -353,7 +341,6 @@ public class DroneViewImpl extends DroneView {
         if (methodName.equals("setEconomyMode")
                 && !((Boolean) oldValue) && (Boolean) newValue) {
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Economy Mode");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Economy Mode");
 
         }
@@ -361,7 +348,6 @@ public class DroneViewImpl extends DroneView {
         if (methodName.equals("setEconomyMode")
                 && (Boolean) oldValue && !(Boolean) newValue) {
 
-            System.out.println("Drone[" + getDroneLabel() + "] " + "Normal Mode");
             loggerController.print("Drone[" + getDroneLabel() + "] " + "Normal Mode");
 
             return;

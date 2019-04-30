@@ -127,12 +127,12 @@ public class WrapperHelper {
         return wrappersInformationsMap.get(String.valueOf(id)).get(NAME_SHOWN_PANEL_ATTRIBUTE);
     }
 
-    public String getIdFrom(String nameShownPanel) {
+    public String getIdFrom(String nameShownPanel, String settingsPanelControllerName) {
        for(Map.Entry entry : wrappersInformationsMap.entrySet()){
 
            Map valuesMap = (Map) entry.getValue();
 
-           if(valuesMap.get(NAME_SHOWN_PANEL_ATTRIBUTE).equals(nameShownPanel)){
+           if(valuesMap.get(NAME_SHOWN_PANEL_ATTRIBUTE).equals(nameShownPanel) && valuesMap.get(CLASS_NAME_SETTINGS_CONTROLLER_ATTRIBUTE).equals(settingsPanelControllerName)){
                return (String) entry.getKey();
            }
        }

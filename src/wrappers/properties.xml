@@ -32,4 +32,19 @@
                     description="default behavior(-)comp.antena(-)economyMode"
                     class-name-settings-controller ="DroneSettingsPanelController"/>
 
+    <WrapperElement name-file-aj=""
+                    id="5"
+                    name-shown-panel="None"
+                    color=""
+                    description="default behavior boat"
+                    class-name-settings-controller="BoatSettingsPanelController"/>
+
+    <WrapperElement name-file-aj="Wrapper4"
+                    id="6" name-shown-panel="Wrapper1"
+                    color="#000000"
+                    description="Para de entregar o produto para ajudar o Drone"
+                    class-name-settings-controller ="BoatSettingsPanelController"/>
+
+
+
 </WrapperElements>

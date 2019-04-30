@@ -125,6 +125,8 @@ abstract public class EnvironmentMarshal {
             boatElement.setAttribute(ConstantXml.UNIQUE_ID_ATTRIBUTE, boat.getUniqueID());
 
             boatElement.setAttribute(ConstantXml.LABEL_ATTRIBUTE, boat.getLabel());
+
+            boatElement.setAttribute(ConstantXml.WRAPPER_ID_ATTRIBUTE, String.valueOf(boat.getWrapperId()));
             boatElement.setAttribute(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE, String.valueOf(boat.getSourceCell().getColumnPosition()));
             boatElement.setAttribute(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE, String.valueOf(boat.getSourceCell().getRowPosition()));
 
@@ -320,6 +322,8 @@ abstract public class EnvironmentMarshal {
             String uniqueID = boatNode.getAttributes().getNamedItem(ConstantXml.UNIQUE_ID_ATTRIBUTE).getNodeValue();
             String label = boatNode.getAttributes().getNamedItem(ConstantXml.LABEL_ATTRIBUTE).getNodeValue();
 
+            int wrapperId = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.WRAPPER_ID_ATTRIBUTE).getNodeValue());
+
             int sourcecolumnPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.SOURCE_COLUMN_POSITION_ATTRIBUTE).getNodeValue());
             int sourcerowPosition = Integer.parseInt(boatNode.getAttributes().getNamedItem(ConstantXml.SOURCE_ROW_POSITION_ATTRIBUTE).getNodeValue());
 
@@ -333,6 +337,7 @@ abstract public class EnvironmentMarshal {
 
             Boat boat = BoatAutomaticController.getInstance().createBoat(uniqueID,label,cellView);
             boat.setDestinyCell(destinyCell);
+            boat.setWrapperId(wrapperId);
             BoatBusinessObject.updateDistances(boat);
 /*
             EnvironmentController environmentController = EnvironmentController.getInstance();

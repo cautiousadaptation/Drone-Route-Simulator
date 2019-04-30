@@ -164,7 +164,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
         wrapperInformationImageView.setOnMouseClicked(event -> {
             String selectedItem = (String) wrapperComboBox.getSelectionModel().getSelectedItem();
-            int wrapperId = Integer.parseInt(WrapperHelper.getInstance().getIdFrom(selectedItem));
+            int wrapperId = Integer.parseInt(WrapperHelper.getInstance().getIdFrom(selectedItem, this.getClass().getSimpleName()));
 
            String descriptionWrapper = WrapperHelper.getInstance().getDescriptionFrom(wrapperId);
            String title = WrapperHelper.getInstance().getNameShownPanelFrom(wrapperId);
@@ -248,7 +248,7 @@ public class DroneSettingsPanelController extends SettingsPanelController<Drone>
 
         //selectedDrone.setSourceCell(CellController.getInstance().getCellFrom(srcI, srcJ));
         String selectedItem = (String) wrapperComboBox.getSelectionModel().getSelectedItem();
-        int wrapperId = Integer.parseInt(WrapperHelper.getInstance().getIdFrom(selectedItem));
+        int wrapperId = Integer.parseInt(WrapperHelper.getInstance().getIdFrom(selectedItem, this.getClass().getSimpleName()));
         selectedDrone.setWrapperId(wrapperId);
 
         selectedDrone.setDestinyCell(CellController.getInstance().getCellFrom(destI, destJ));

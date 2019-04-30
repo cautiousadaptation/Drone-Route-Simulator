@@ -648,7 +648,7 @@ public class DroneBusinessObject {
         }
 
         drone.setReturningToHome(true);
-        System.out.println("Return to Home inicio" + Thread.currentThread().getName());
+        //System.out.println("Return to Home inicio" + Thread.currentThread().getName());
 
 
 
