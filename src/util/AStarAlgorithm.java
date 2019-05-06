@@ -24,11 +24,6 @@ public class AStarAlgorithm {
 
         while (currentNode.getDistanceTraveledToTheDestiny()>distanceMaxFromDestine /*!openList.isEmpty()*/){
 
-            Node bestNode = getBestNodeIn(new ArrayList<>(openMap.values()));
-
-
-
-            currentNode = bestNode;
 
             Map<String, Node> adjoiningNeighborNodeList = buildUpdatedAdjoiningNeighborNodes(currentNode, destinyCellView);
 
@@ -44,7 +39,16 @@ public class AStarAlgorithm {
 
             openMap.remove(currentNode.getKey());
 
-            closeList.put(currentNode.getKey(),currentNode);
+            closeList.put(currentNode.getKey(), currentNode);
+
+            if(!openMap.isEmpty()){
+                Node bestNode = getBestNodeIn(new ArrayList<>(openMap.values()));
+
+                currentNode = bestNode;
+            }else {
+                break;
+            }
+
 
             /*if(openMap.isEmpty()){
                 break;
@@ -59,6 +63,8 @@ public class AStarAlgorithm {
             route.add(currentNode.getCellView());
             currentNode = currentNode.getFather();
         }
+
+        route.add(root.getCellView());
 
         Collections.reverse(route);
 

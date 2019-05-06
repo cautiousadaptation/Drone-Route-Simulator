@@ -61,7 +61,7 @@ public class Boat extends Entity {
         return returnToHome;
     }
 
-    public void stocked(boolean stocked) {
+    public void setStocked(boolean stocked) {
         boolean oldValue = this.stocked;
         boolean newValue = stocked;
 
@@ -72,6 +72,10 @@ public class Boat extends Entity {
 
         notifiesListeners(Thread.currentThread().getStackTrace()[1].getMethodName(),oldValue, newValue);
 
+    }
+
+    public boolean isStocked() {
+        return stocked;
     }
 
     public void setRoute(List<CellView> route) {

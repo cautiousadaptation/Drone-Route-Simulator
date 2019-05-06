@@ -1,16 +1,13 @@
 package model.entity.boat;
 
-import controller.BoatAutomaticController;
 import controller.CellController;
 import controller.EnvironmentController;
 import model.Cell;
-import util.AStarAlgorithm;
 import view.CellView;
 import view.boat.BoatView;
 import view.river.RiverView;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class BoatBusinessObject {
@@ -250,7 +247,7 @@ public abstract class BoatBusinessObject {
         boat.setCurrentCollunmPosition(boat.getInitialCollunmPosition());
         boat.setStarted(false);
         boat.setReturnToHome(false);
-        boat.stocked(false);
+        boat.setStocked(false);
         updateDistances(boat);
 
     }
@@ -302,11 +299,11 @@ public abstract class BoatBusinessObject {
 
     }
 
-    public static void generateRoute(BoatView boatView, CellView dstCellView, double distanceMaxFromDestine){
+  /*  public static void generateRoute(BoatView boatView, CellView dstCellView, double distanceMaxFromDestine){
         Boat boat = BoatAutomaticController.getInstance().getBoatFrom(boatView.getUniqueID());
         boat.setRoute(AStarAlgorithm.buildRoute(boatView.getCurrentCellView(), dstCellView, distanceMaxFromDestine));
 
-    }
+    }*/
 
     public static void normalDestiny(Boat boat) {
         boat.setReturnToHome(false);
@@ -314,11 +311,11 @@ public abstract class BoatBusinessObject {
 
 
     public static void stocked(Boat boat) {
-        boat.stocked(true);
+        boat.setStocked(true);
     }
 
     public static void shortage(Boat boat) {
-        boat.stocked(false);
+        boat.setStocked(false);
     }
 
 

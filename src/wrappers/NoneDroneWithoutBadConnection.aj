@@ -15,7 +15,7 @@ import view.river.RiverView;
 import java.util.ArrayList;
 import java.util.List;
 
-public aspect NoneWithoutBadConnection {
+public aspect NoneDroneWithoutBadConnection {
     pointcut setBadConnection(): call (* model.entity.drone.DroneBusinessObject.setBadConnection(*));
     pointcut applyEconomyMode(): call (* model.entity.drone.DroneBusinessObject.applyEconomyMode(*));
 

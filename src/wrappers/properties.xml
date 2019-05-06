@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <WrapperElements>
 
+    <!--Drone Wrappers-->
     <WrapperElement name-file-aj="DefaultBehaviorWithOutEconomyMode"
                     id="0"
                     name-shown-panel="None"
@@ -26,13 +27,14 @@
                     description="Keep(+)Move(+)glide(+)SoS(-)economyMode"
                     class-name-settings-controller ="DroneSettingsPanelController"/>
 
-    <WrapperElement name-file-aj="NoneWithoutBadConnection"
+    <WrapperElement name-file-aj="NoneDroneWithoutBadConnection"
                     id="4" name-shown-panel="None_not.bc"
                     color="#000000"
                     description="default behavior(-)comp.antena(-)economyMode"
                     class-name-settings-controller ="DroneSettingsPanelController"/>
 
-    <WrapperElement name-file-aj=""
+    <!--Boat Wrappers-->
+    <WrapperElement name-file-aj="NoneBoatWrapper"
                     id="5"
                     name-shown-panel="None"
                     color=""
@@ -45,7 +47,7 @@
                     description="Para de entregar o produto para ajudar o Drone"
                     class-name-settings-controller ="BoatSettingsPanelController"/>
 
-    <WrapperElement name-file-aj="Wrapper4"
+    <WrapperElement name-file-aj="BoatExclusiveWrapper"
                     id="7" name-shown-panel="Boat Exclusive"
                     color="#000000"
                     description="Boat apenas para servir o drone"

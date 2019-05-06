@@ -22,15 +22,16 @@ public class BoatAutomaticController {
     private StopWatch automaticExecutionStopWatch;
     private StopWatch alertNavigateStopWatch;
     private StopWatch navigateStopWatch;
-    private boolean mustStopAlertNavigateStopWatch;
-    private boolean mustStopNavigateStopWatch;
+    private boolean isRestart = false;
+   /* private boolean mustStopAlertNavigateStopWatch;
+    private boolean mustStopNavigateStopWatch;*/
 
 
     private BoatAutomaticController() {
     }
 
-    public static BoatAutomaticController getInstance(){
-        if(instance == null){
+    public static BoatAutomaticController getInstance() {
+        if (instance == null) {
 
             instance = new BoatAutomaticController();
         }
@@ -38,9 +39,9 @@ public class BoatAutomaticController {
         return instance;
     }
 
-    public Boat createBoat(String uniqueID, String boatLabel, CellView currentCellView){
+    public Boat createBoat(String uniqueID, String boatLabel, CellView currentCellView) {
 
-        BoatView boatView  = new BoatView(uniqueID, boatLabel, currentCellView);
+        BoatView boatView = new BoatView(uniqueID, boatLabel, currentCellView);
 
 
         boatViewMap.put(uniqueID, boatView);
@@ -63,7 +64,6 @@ public class BoatAutomaticController {
     }
 
 
-
     public BoatView getBoatViewFrom(String identifierBoat) {
 
         return boatViewMap.get(identifierBoat);
@@ -78,20 +78,21 @@ public class BoatAutomaticController {
             BoatBusinessObject.resetSettingsBoat(boat);
 
         }
-        mustStopAlertNavigateStopWatch = true;
+        isRestart = true;
+       /* mustStopAlertNavigateStopWatch = true;
         mustStopNavigateStopWatch = true;
-
+*/
     }
 
-    public void consumeClickEvent(SelectableView selectedEntityView ) {
-        if(selectedEntityView instanceof BoatView){
-            Boat boat =  getBoatFrom(selectedEntityView.getUniqueID());
+    public void consumeClickEvent(SelectableView selectedEntityView) {
+        if (selectedEntityView instanceof BoatView) {
+            Boat boat = getBoatFrom(selectedEntityView.getUniqueID());
             boat.setSelected(true);
         }
     }
 
     public void consumeOnKeyPressed(SelectableView selectedEntityView, KeyEvent keyEvent) {
-        if(!(selectedEntityView instanceof BoatView)){
+        if (!(selectedEntityView instanceof BoatView)) {
             return;
         }
 
@@ -99,133 +100,196 @@ public class BoatAutomaticController {
 
 
     public void consumeRunEnviroment() {
-        mustStopAlertNavigateStopWatch = false;
-        mustStopNavigateStopWatch = false;
+//        mustStopAlertNavigateStopWatch = false;
+//        mustStopNavigateStopWatch = false;
 
-     alertNavigateStopWatch  = new StopWatch(0, 5000) {
+        Map<Boat, LinkedList<CellView>> routeMap = new HashMap<>();
+        isRestart = false;
+
+        navigateStopWatch = new StopWatch(0, 1000) {
             @Override
             public void task() {
-                for(Boat boat : boatMap.values()){
-                    if(boat.isShitDown()){
-
-                        Random random = new Random();
-                        double randomDouble = random.nextDouble();
-
-                        if(randomDouble>0.0){
-                        Platform.runLater(() -> {
-                            BoatBusinessObject.notifyRunEnviroment(boat);
-
-                            BoatBusinessObject.start(boat);
-                            BoatBusinessObject.normalDestiny(boat);
-                            BoatBusinessObject.stocked(boat);
-
-                        });
-
-                            //todo tlz eu tire a criação da rota daqui, pois pode tlz diminuir a performace
-                            BoatView boatView = BoatAutomaticController.getInstance().getBoatViewFrom(boat.getUniqueID());
-                            CellView destinyCellView = CellController.getInstance().getCellViewFrom(boat.getDestinyCell());
-
-                            BoatBusinessObject.generateRoute(boatView, destinyCellView, 0);
-
-                        }
-
-                    }
-
-                }
+                executeAutomaticallyBoats(routeMap);
             }
 
             @Override
             public boolean conditionStop() {
-                return mustStopAlertNavigateStopWatch;
+                return isRestart;
             }
         };
-
-
-        navigateStopWatch  = new StopWatch(0, 1000) {
-            @Override
-            public void task() {
-                Platform.runLater(() -> {
-                for(Boat boat : boatMap.values()){
-                    if(boat.isStarted()){
-                        navigate(boat);
-                    }
-
-
-                }
-                });
-            }
-
-            @Override
-            public boolean conditionStop() {
-                return mustStopNavigateStopWatch;
-            }
-        };
-
-
 
     }
 
-    public void navigate(Boat boat) {
-        System.out.println("entrou no navegation");
+    public void executeAutomaticallyBoats(Map<Boat, LinkedList<CellView>> routeMap) {
 
+        for (Boat boat : boatMap.values()) {
+
+            executeAutomaticallyBoat(boat, routeMap);
+        }
+    }
+
+    public void executeAutomaticallyBoat(Boat boat, Map<Boat, LinkedList<CellView>> routeMap) {
+        if (boat.isShitDown()) {
+            Random random = new Random();
+            double randomDouble = random.nextDouble();
+
+            if(randomDouble>0.9){
+                BoatBusinessObject.start(boat);
+                BoatBusinessObject.stocked(boat);
+            }
+
+        } else {
+            // if(boat.isStocked()){
+            if (existRouteTo(boat, routeMap)) {
+                CellView nextCellViewFromRoute = getNextCellViewFromRoute(boat, routeMap);
+
+                if (nextCellViewFromRoute == null) {
+                    if (!boat.isReturnToHome()) {
+                        //arrived in destiny
+                        BoatBusinessObject.shortage(boat);
+                        BoatBusinessObject.returnToHome(boat);
+                        buildRouteToReturnToHome(boat, routeMap);
+
+                    } else {
+                        //arrived in source
+                        BoatBusinessObject.normalDestiny(boat);
+                        BoatBusinessObject.shutDown(boat);
+                        cleanRoute(boat, routeMap);
+                    }
+                } else {
+                    navegate(boat, nextCellViewFromRoute);
+                }
+
+
+            } else {
+
+                buildRouteToDestiny(boat, routeMap);
+            }
+            //   }
+        }
+    }
+
+    private void cleanRoute(Boat boat, Map<Boat, LinkedList<CellView>> routeMap) {
+        routeMap.remove(boat);
+    }
+
+    private void buildRouteToDestiny(Boat boat, Map<Boat, LinkedList<CellView>> routeMap) {
+        LinkedList<CellView> route = genereteRoute(boat, boat.getDestinyCell());
+        updateMapWithNewRoute(boat, route, routeMap);
+    }
+
+    private void buildRouteToReturnToHome(Boat boat, Map<Boat, LinkedList<CellView>> routeMap) {
+        LinkedList<CellView> route = genereteRoute(boat, boat.getSourceCell());
+        updateMapWithNewRoute(boat, route, routeMap);
+    }
+
+    public LinkedList<CellView> genereteRoute(Boat boat, Cell destinyCell) {
         BoatView boatView = getBoatViewFrom(boat.getUniqueID());
+        CellView destinyCellView = CellController.getInstance().getCellViewFrom(destinyCell);
+        int distanceMaxFromDestination = 0;
+        List<CellView> route = AStarAlgorithm.buildRoute(boatView.getCurrentCellView(), destinyCellView, distanceMaxFromDestination);
+        return new LinkedList<>(route);
+    }
 
-            if(boat.getDistanceDestiny() == 0){
-                BoatBusinessObject.returnToHome(boat);
-                BoatBusinessObject.shortage(boat);
+    private void updateMapWithNewRoute(Boat boat, LinkedList<CellView> route, Map<Boat, LinkedList<CellView>> routeMap) {
+        routeMap.put(boat, route);
 
-                BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(boat.getSourceCell()),0);
+    }
 
+    private void navegate(Boat boat, CellView nextCellViewFromRoute) {
+        int rowPosition = nextCellViewFromRoute.getRowPosition();
+        int columnPositin = nextCellViewFromRoute.getCollunmPosition();
 
-
-            }else if(boat.getDistanceSource() == 0 && boat.isReturnToHome()){
-                BoatBusinessObject.shutDown(boat);
-
-            }
-
-
-
-            int currentIndex = boat.getRoute().indexOf(boatView.getCurrentCellView());
-
-            if(currentIndex+1<=boat.getRoute().size()-1){
-                CellView nextCellView = boat.getRoute().get(currentIndex+1);
-
-                boat.setCurrentRowPosition(nextCellView.getRowPosition());
-                boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
-            }
+        Platform.runLater(() -> {
+            boat.setCurrentRowPosition(rowPosition);
+            boat.setCurrentCollunmPosition(columnPositin);
+        });
 
 
+        BoatBusinessObject.updateDistances(boat);
+    }
 
+    private CellView getNextCellViewFromRoute(Boat boat, Map<Boat, LinkedList<CellView>> routeMap) {
+        CellView boatCellView = getBoatViewFrom(boat.getUniqueID()).getCurrentCellView();
 
+        LinkedList<CellView> route = routeMap.get(boat);
+        int indexFromBoatCellView = route.indexOf(boatCellView);
+        int nextIndexCellView = indexFromBoatCellView + 1;
 
+        if (nextIndexCellView > route.size() - 1) {
+            return null;
+        }
 
-
-
-
-
-
-         /*   if(boat.isReturnToHome()){
-                CellView cellView = CellController.getInstance().getCellViewFrom(boat.getSourceCell());
-                goDestinyAutomatic(boatView, cellView);
-                //   System.out.println(boat.getLabel()+":"+cellView.getRowPosition()+","+cellView.getCollunmPosition());
-            }else {
-                CellView cellView = CellController.getInstance().getCellViewFrom(boat.getDestinyCell());
-                goDestinyAutomatic(boatView, cellView);
-                //  System.out.println(boat.getLabel()+":"+cellView.getRowPosition()+","+cellView.getCollunmPosition());
-            }
-*/
-
-            BoatBusinessObject.updateDistances(boat);
-
-
+        return route.get(nextIndexCellView);
 
 
     }
 
-    public List<Boat> getEnableBoatList(){
+    private boolean existRouteTo(Boat boat, Map<Boat, LinkedList<CellView>> routeMap) {
+        return routeMap.containsKey(boat);
+    }
+
+//    public void navigate(Boat boat) {
+//        System.out.println("entrou no navegation");
+//
+//        BoatView boatView = getBoatViewFrom(boat.getUniqueID());
+//
+//            if(boat.getDistanceDestiny() == 0){
+//                BoatBusinessObject.returnToHome(boat);
+//                BoatBusinessObject.shortage(boat);
+//
+//                BoatBusinessObject.generateRoute(boatView, CellController.getInstance().getCellViewFrom(boat.getSourceCell()),0);
+//
+//
+//
+//            }else if(boat.getDistanceSource() == 0 && boat.isReturnToHome()){
+//                BoatBusinessObject.shutDown(boat);
+//
+//            }
+//
+//
+//
+//            int currentIndex = boat.getRoute().indexOf(boatView.getCurrentCellView());
+//
+//            if(currentIndex+1<=boat.getRoute().size()-1){
+//                CellView nextCellView = boat.getRoute().get(currentIndex+1);
+//
+//                boat.setCurrentRowPosition(nextCellView.getRowPosition());
+//                boat.setCurrentCollunmPosition(nextCellView.getCollunmPosition());
+//            }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//         /*   if(boat.isReturnToHome()){
+//                CellView cellView = CellController.getInstance().getCellViewFrom(boat.getSourceCell());
+//                goDestinyAutomatic(boatView, cellView);
+//                //   System.out.println(boat.getLabel()+":"+cellView.getRowPosition()+","+cellView.getCollunmPosition());
+//            }else {
+//                CellView cellView = CellController.getInstance().getCellViewFrom(boat.getDestinyCell());
+//                goDestinyAutomatic(boatView, cellView);
+//                //  System.out.println(boat.getLabel()+":"+cellView.getRowPosition()+","+cellView.getCollunmPosition());
+//            }
+//*/
+//
+//            BoatBusinessObject.updateDistances(boat);
+//
+//
+//
+//
+//    }
+
+    public List<Boat> getEnableBoatList() {
         List<Boat> enableboatList = new ArrayList<>();
-        for(Boat boat : boatMap.values()){
-            if(isEnable(boat)){
+        for (Boat boat : boatMap.values()) {
+            if (isEnable(boat)) {
                 enableboatList.add(boat);
             }
         }
@@ -233,7 +297,7 @@ public class BoatAutomaticController {
         return enableboatList;
     }
 
-    public boolean isEnable(Boat boat){
+    public boolean isEnable(Boat boat) {
         return boat.isShitDown();
     }
 
@@ -246,11 +310,35 @@ public class BoatAutomaticController {
 
 
     public void cleanSelections() {
-        for(Boat boat : boatMap.values()){
+        for (Boat boat : boatMap.values()) {
             boat.setSelected(false);
         }
     }
 
+
+    public boolean existBoatInRadius(CellView cellView, double distance) {
+        if (boatsInRadius(cellView, distance).size() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public List<BoatView> boatsInRadius(CellView cellView, double distance) {
+        List<BoatView> boatViewList = new ArrayList<>();
+
+        for (BoatView boatView : boatViewMap.values()) {
+            if (getDistance(cellView, boatView) <= distance) {
+                boatViewList.add(boatView);
+            }
+        }
+
+        return boatViewList;
+    }
+
+    public double getDistance(CellView cellView, BoatView boatView) {
+        return CellController.getInstance().calculeteDisplacementFrom(cellView, boatView);
+    }
 
 
     public void goAutomaticTo(CellView cellView, BoatView boatView) {
@@ -258,11 +346,11 @@ public class BoatAutomaticController {
 
         int rowDestiny = cellView.getRowPosition(), colunmDestiny = cellView.getCollunmPosition();
 
-        if(rowDestiny != boatView.getCurrentCellView().getRowPosition()){
+        if (rowDestiny != boatView.getCurrentCellView().getRowPosition()) {
             boat.setCurrentRowPosition(rowDestiny);
         }
 
-        if(colunmDestiny != boatView.getCurrentCellView().getCollunmPosition()){
+        if (colunmDestiny != boatView.getCurrentCellView().getCollunmPosition()) {
             boat.setCurrentCollunmPosition(rowDestiny);
         }
     }

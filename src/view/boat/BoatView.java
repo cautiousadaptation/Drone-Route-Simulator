@@ -1,6 +1,7 @@
 package view.boat;
 
 import controller.CellController;
+import controller.LoggerController;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -155,13 +156,29 @@ public class BoatView  extends Group implements SelectableView, Boat.Listener {
         }
 
 
-        if(methodName.equals("stocked") && (boolean)oldValue != (boolean)newValue){
+        if(methodName.equals("setStocked") && (boolean)oldValue != (boolean)newValue){
 
             if((boolean)newValue){
                 boxImageView.setVisible(true);
+                LoggerController.getInstance().print("Boat[" + boat.getLabel() + "] " + "Stocked");
 
             }else {
                 boxImageView.setVisible(false);
+                LoggerController.getInstance().print("Boat[" + boat.getLabel() + "] " + "Shortage");
+
+            }
+
+            return;
+
+        }
+
+        if(methodName.equals("setStarted") && (boolean)oldValue != (boolean)newValue){
+
+            if((boolean)newValue){
+                LoggerController.getInstance().print("Boat[" + boat.getLabel() + "] " + "Start");
+
+            }else {
+                LoggerController.getInstance().print("Boat[" + boat.getLabel() + "] " + "ShutDown");
 
             }
 
