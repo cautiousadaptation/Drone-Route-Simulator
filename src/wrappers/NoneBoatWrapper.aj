@@ -34,7 +34,7 @@ public aspect NoneBoatWrapper {
     static Map<Boat, Drone> boatGoingToDeliverDrone = new HashMap<>();
 
     /*After the boat deliver the drone, he must deliver products or return to source (RTH)*/
-    static private Set<Boat> boatGoingToFixRoute = new HashSet<>();
+    static  Set<Boat> boatGoingToFixRoute = new HashSet<>();
 
     static Map<Drone, ImageView> catchDroneViewMap = new HashMap<>();
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public aspect Wrapper4 {
-    pointcut isEnable() : call ( boolean controller.BoatAutomaticController.isEnable(*));
+    pointcut isEnable() : call ( boolean wrappers.NoneBoatWrapper.isEnable(*));
 
 
     boolean around(): isEnable()
@@ -23,9 +23,12 @@ public aspect Wrapper4 {
             ){
 
             Boat boat = ((Boat)thisJoinPoint.getArgs()[0]);
-        LoggerController.getInstance().print("Boat[" + boat.getLabel() + "] " + "Stopped your job to help the drone");
+
             //the boat wrapper will always be available to help drone, even if it is delivering a product.
-        return true;
+
+        return  !NoneBoatWrapper.boatGoingToCatchDrone.containsKey(boat)
+                && !NoneBoatWrapper.boatGoingToDeliverDrone.containsKey(boat)
+                && !NoneBoatWrapper.boatGoingToFixRoute.contains(boat);
 
     }
 
